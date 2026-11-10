@@ -32,5 +32,7 @@ using System.Runtime.InteropServices;
 //可以指定所有这些值，也可以使用“生成号”和“修订号”的默认值，
 // 方法是按如下所示使用“*”: :
 // [assembly: AssemblyVersion("1.0.*")]
+// AssemblyVersion stays at 1.0.13.0 for 1.x binary compatibility.
+// Only a breaking/major release changes its first two components.
+// AssemblyFileVersion is generated at build time and follows the package version.
 [assembly: AssemblyVersion("1.0.13.0")]
-[assembly: AssemblyFileVersion("1.0.13.0")]

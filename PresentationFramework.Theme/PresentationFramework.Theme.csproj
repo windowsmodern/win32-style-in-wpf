@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <LangVersion>6</LangVersion>
     <TargetFrameworkProfile />
+    <FileVersion Condition="'$(FileVersion)' == ''">1.0.13.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,5 +97,12 @@
       <Name>ThemeExplorer.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="GenerateAssemblyFileVersion" BeforeTargets="CoreCompile">
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)AssemblyFileVersion.g.cs" Lines="[assembly: System.Reflection.AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)AssemblyFileVersion.g.cs" />
+    </ItemGroup>
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

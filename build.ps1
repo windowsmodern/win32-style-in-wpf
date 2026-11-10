@@ -10,7 +10,9 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string] $Configuration = 'Release',
 
-    [switch] $SelfTest
+    [switch] $SelfTest,
+
+    [string] $FileVersion = ''
 )
 
 Set-StrictMode -Version Latest
@@ -69,8 +71,17 @@ function Invoke-ThemeSelfTest {
 $msbuild = Find-MSBuild
 Write-Host "MSBuild: $msbuild"
 
-& $msbuild (Join-Path $root 'PresentationFramework.Theme.sln') /t:Rebuild `
-    "/p:Configuration=$Configuration" '/p:Platform=Any CPU' /v:minimal
+$msbuildArgs = @(
+    (Join-Path $root 'PresentationFramework.Theme.sln'),
+    '/t:Rebuild',
+    "/p:Configuration=$Configuration",
+    '/p:Platform=Any CPU',
+    '/v:minimal'
+)
+if ($FileVersion) {
+    $msbuildArgs += "/p:FileVersion=$FileVersion"
+}
+& $msbuild @msbuildArgs
 
 if ($LASTEXITCODE -ne 0) {
     throw "Build failed with exit code $LASTEXITCODE."
