@@ -19,13 +19,31 @@ old name.
 
 ## Namespaces
 
+Two CLR namespaces hold the types:
+
+| CLR namespace | Members |
+| --- | --- |
+| `System.Windows.Controls` | `HackImage`, `HackBorder`, `ThemePart`, `Hack*` buttons |
+| `Microsoft.Windows.Themes` | `ThemeImage`, `ThemeResourceKeys`, `ThemeWindowMetrics`, ... |
+
+Both are mapped into the WPF presentation XML namespace
+(`http://schemas.microsoft.com/winfx/2006/xaml/presentation`), so once the assembly is referenced no
+prefix is needed:
+
+```xml
+<HackImage ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="1" />
+```
+
+The explicit prefixes still work and are what this repository uses inside its own dictionaries:
+
 ```xml
 xmlns:pt="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
 xmlns:th="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
 ```
 
-The `Hack*` controls are in `System.Windows.Controls`. `ThemeImage`, `ThemeImageDiagnostics` and
-`ThemeResourceKeys` are in `Microsoft.Windows.Themes`.
+Loose XAML parsed with `XamlReader.Parse` needs the assembly to be loaded before the parse; compiled
+XAML does not. Mapped names must not collide with other types in the presentation namespace; the 25
+names in this library were checked against WPF and none collide.
 
 ## HackImage
 

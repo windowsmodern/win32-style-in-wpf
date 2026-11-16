@@ -17,13 +17,29 @@
 
 ## 命名空间
 
+类型分布在两个 CLR 命名空间：
+
+| CLR 命名空间 | 成员 |
+| --- | --- |
+| `System.Windows.Controls` | `HackImage`、`HackBorder`、`ThemePart`、`Hack*` 按钮 |
+| `Microsoft.Windows.Themes` | `ThemeImage`、`ThemeResourceKeys`、`ThemeWindowMetrics` 等 |
+
+两者都映射到了 WPF 的 presentation XML 命名空间
+（`http://schemas.microsoft.com/winfx/2006/xaml/presentation`），所以引用程序集后不需要前缀：
+
+```xml
+<HackImage ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="1" />
+```
+
+显式前缀仍然有效，本仓库自己的字典里用的就是这种写法：
+
 ```xml
 xmlns:pt="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
 xmlns:th="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
 ```
 
-`Hack*` 控件位于 `System.Windows.Controls`；`ThemeImage`、`ThemeImageDiagnostics`、
-`ThemeResourceKeys` 位于 `Microsoft.Windows.Themes`。
+用 `XamlReader.Parse` 解析松散 XAML 时必须先加载程序集，编译后的 XAML 不需要。映射的名称不能与
+presentation 命名空间里的其他类型重名；本库的 25 个名称已与 WPF 比对过，没有冲突。
 
 ## HackImage
 

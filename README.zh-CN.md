@@ -56,6 +56,36 @@ TabControl / ScrollBar / StatusBar / ToolTip / ContextMenu：
 
 > 请在创建窗口/控件之前合并字典；运行中替换字典只影响之后创建的控件。
 
+## XAML 命名空间
+
+`Hack*` 控件（`System.Windows.Controls`）和 `Microsoft.Windows.Themes` 里的辅助类型同时也声明在
+WPF 的 presentation XML 命名空间下，所以在引用本程序集之后可以省略 `xmlns` 前缀——与
+`System.Windows.Controls.Ribbon` 用的是同一种机制：
+
+```xml
+<HackBorder ThemeImage.Class="TaskBar" ThemeImage.Part="1" CornerRadius="4" Padding="6">
+  <TextBlock Text="inside the part" />
+</HackBorder>
+```
+
+显式写法仍然有效，本库自己的字典里用的就是这种写法：
+
+```xml
+<Window xmlns:pt="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
+        xmlns:th="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
+        ...>
+```
+
+注意事项：
+
+- 编译 XAML 的项目必须引用 `PresentationFramework.Theme.dll`；标记编译器从被引用程序集的
+  `XmlnsDefinitionAttribute` 中解析无前缀名称。
+- 编译后的 XAML（BAML）只要引用了程序集就能解析。传给 `XamlReader.Parse` 的松散 XAML 必须先加载
+  该程序集，否则会报“无法创建未知类型 …”。先创建过一个使用这些控件的编译窗口即可。
+- presentation 命名空间由 WPF 以及所有映射进来的库共享，类型名必须保持唯一。本库映射的 25 个名称
+  目前与 `PresentationFramework` / `PresentationCore` / `WindowsBase` / `System.Xaml` 均无冲突。
+
+
 ## Hack* 组件
 
 `HackImage`、`HackBorder` 和 `Hack*` 按钮把 UxTheme 部件或九宫格位图变成普通的 WPF 元素，

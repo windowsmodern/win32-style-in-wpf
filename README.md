@@ -64,6 +64,38 @@ Reference these assemblies: `PresentationFramework.Theme.dll`, `ThemeExplorer.Co
 > Merge the dictionary before creating windows/controls. Replacing it at runtime only affects
 > controls created afterwards.
 
+## XAML namespace
+
+The `Hack*` controls (`System.Windows.Controls`) and the `Microsoft.Windows.Themes` helpers are
+also declared in the WPF presentation XML namespace, so after referencing this assembly they can be
+used without an `xmlns` prefix — the same mechanism `System.Windows.Controls.Ribbon` uses:
+
+```xml
+<HackBorder ThemeImage.Class="TaskBar" ThemeImage.Part="1" CornerRadius="4" Padding="6">
+  <TextBlock Text="inside the part" />
+</HackBorder>
+```
+
+The explicit form keeps working and is what this library uses inside its own dictionaries:
+
+```xml
+<Window xmlns:pt="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
+        xmlns:th="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
+        ...>
+```
+
+Things to know:
+
+- The project that compiles the XAML must reference `PresentationFramework.Theme.dll`; the markup
+  compiler resolves unprefixed names from the `XmlnsDefinitionAttribute` of referenced assemblies.
+- Compiled XAML (BAML) resolves them as soon as the assembly is referenced. Loose XAML passed to
+  `XamlReader.Parse` needs the assembly to be loaded first; before that the parse fails with
+  "Cannot create unknown type ...". Creating one compiled window that uses the controls is enough.
+- The presentation namespace is shared with WPF and every other library that maps into it, so the
+  type names must stay unique. This library's 25 mapped names currently collide with nothing in
+  `PresentationFramework` / `PresentationCore` / `WindowsBase` / `System.Xaml`.
+
+
 ## Hack* components
 
 `HackImage`, `HackBorder` and the `Hack*` buttons turn a UxTheme part or a nine-patch bitmap into

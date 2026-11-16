@@ -1,8 +1,6 @@
 <Window x:Class="ThemeDemo.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:pt="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
-        xmlns:th="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
         xmlns:local="clr-namespace:ThemeDemo"
         Title="PresentationFramework.Theme Gallery"
         Width="1120" Height="1320"
@@ -86,73 +84,73 @@
                     <StackPanel>
                         <TextBlock Text="Button / BP_PUSHBUTTON (part 1)" FontWeight="SemiBold" />
                         <WrapPanel Margin="0,6,0,10">
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="1" /><TextBlock Text="1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="5" /><TextBlock Text="5 Default" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="100" Height="30" th:ThemeImage.Class="Button" th:ThemeImage.Part="1" th:ThemeImage.State="6" /><TextBlock Text="6 DefaultAnimating" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="1" /><TextBlock Text="1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="5" /><TextBlock Text="5 Default" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="100" Height="30" ThemeImage.Class="Button" ThemeImage.Part="1" ThemeImage.State="6" /><TextBlock Text="6 DefaultAnimating" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
 
                         <TextBlock Text="CheckBox / BP_CHECKBOX (Button part 3)" FontWeight="SemiBold" />
                         <WrapPanel Margin="0,6,0,10">
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="1" /><TextBlock Text="1 Unchecked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="5" /><TextBlock Text="5 Checked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="6" /><TextBlock Text="6 CheckedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="7" /><TextBlock Text="7 CheckedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="8" /><TextBlock Text="8 CheckedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="9" /><TextBlock Text="9 Mixed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="10" /><TextBlock Text="10 MixedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="11" /><TextBlock Text="11 MixedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="3" th:ThemeImage.State="12" /><TextBlock Text="12 MixedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="1" /><TextBlock Text="1 Unchecked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="5" /><TextBlock Text="5 Checked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="6" /><TextBlock Text="6 CheckedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="7" /><TextBlock Text="7 CheckedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="8" /><TextBlock Text="8 CheckedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="9" /><TextBlock Text="9 Mixed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="10" /><TextBlock Text="10 MixedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="11" /><TextBlock Text="11 MixedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="3" ThemeImage.State="12" /><TextBlock Text="12 MixedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
 
                         <TextBlock Text="RadioButton / BP_RADIOBUTTON (Button part 2)" FontWeight="SemiBold" />
                         <WrapPanel Margin="0,6,0,10">
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="1" /><TextBlock Text="1 Unchecked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="5" /><TextBlock Text="5 Checked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="6" /><TextBlock Text="6 CheckedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="7" /><TextBlock Text="7 CheckedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="16" Height="16" th:ThemeImage.Class="Button" th:ThemeImage.Part="2" th:ThemeImage.State="8" /><TextBlock Text="8 CheckedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="1" /><TextBlock Text="1 Unchecked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="3" /><TextBlock Text="3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="5" /><TextBlock Text="5 Checked" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="6" /><TextBlock Text="6 CheckedHot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="7" /><TextBlock Text="7 CheckedPressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="16" Height="16" ThemeImage.Class="Button" ThemeImage.Part="2" ThemeImage.State="8" /><TextBlock Text="8 CheckedDisabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
 
                         <TextBlock Text="TextBox / EP_EDITTEXT (Edit part 1)" FontWeight="SemiBold" />
                         <WrapPanel Margin="0,6,0,0">
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="160" Height="26" th:ThemeImage.Class="Edit" th:ThemeImage.Part="1" th:ThemeImage.State="1" /><TextBlock Text="1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="160" Height="26" th:ThemeImage.Class="Edit" th:ThemeImage.Part="1" th:ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="160" Height="26" th:ThemeImage.Class="Edit" th:ThemeImage.Part="1" th:ThemeImage.State="3" /><TextBlock Text="3 Focused" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="160" Height="26" th:ThemeImage.Class="Edit" th:ThemeImage.Part="1" th:ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="160" Height="26" th:ThemeImage.Class="Edit" th:ThemeImage.Part="1" th:ThemeImage.State="5" /><TextBlock Text="5 ReadOnly" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="160" Height="26" ThemeImage.Class="Edit" ThemeImage.Part="1" ThemeImage.State="1" /><TextBlock Text="1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="160" Height="26" ThemeImage.Class="Edit" ThemeImage.Part="1" ThemeImage.State="2" /><TextBlock Text="2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="160" Height="26" ThemeImage.Class="Edit" ThemeImage.Part="1" ThemeImage.State="3" /><TextBlock Text="3 Focused" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="160" Height="26" ThemeImage.Class="Edit" ThemeImage.Part="1" ThemeImage.State="4" /><TextBlock Text="4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="160" Height="26" ThemeImage.Class="Edit" ThemeImage.Part="1" ThemeImage.State="5" /><TextBlock Text="5 ReadOnly" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
                         <TextBlock Text="Raw parts: ScrollBar / GroupBox / Tab / Menu / Tooltip / Status" FontWeight="SemiBold" Margin="0,4,0,0" />
                         <WrapPanel Margin="0,6,0,0">
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="17" Height="17" th:ThemeImage.Class="Scrollbar" th:ThemeImage.Part="1" th:ThemeImage.State="1" /><TextBlock Text="Scroll up" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="17" Height="17" th:ThemeImage.Class="Scrollbar" th:ThemeImage.Part="1" th:ThemeImage.State="5" /><TextBlock Text="Scroll down" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="17" Height="55" th:ThemeImage.Class="Scrollbar" th:ThemeImage.Part="3" th:ThemeImage.State="1" /><TextBlock Text="Thumb" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="180" Height="70" th:ThemeImage.Class="Button" th:ThemeImage.Part="4" th:ThemeImage.State="1" /><TextBlock Text="GroupBox" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="120" Height="28" th:ThemeImage.Class="Tab" th:ThemeImage.Part="5" th:ThemeImage.State="3" /><TextBlock Text="Tab" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="200" Height="22" th:ThemeImage.Class="Menu" th:ThemeImage.Part="14" th:ThemeImage.State="1" /><TextBlock Text="Menu item" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="200" Height="40" th:ThemeImage.Class="Tooltip" th:ThemeImage.Part="1" th:ThemeImage.State="1" /><TextBlock Text="Tooltip" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:HackImage Width="200" Height="26" th:ThemeImage.Class="Status" th:ThemeImage.Part="1" th:ThemeImage.State="1" /><TextBlock Text="Status" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="17" Height="17" ThemeImage.Class="Scrollbar" ThemeImage.Part="1" ThemeImage.State="1" /><TextBlock Text="Scroll up" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="17" Height="17" ThemeImage.Class="Scrollbar" ThemeImage.Part="1" ThemeImage.State="5" /><TextBlock Text="Scroll down" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="17" Height="55" ThemeImage.Class="Scrollbar" ThemeImage.Part="3" ThemeImage.State="1" /><TextBlock Text="Thumb" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="180" Height="70" ThemeImage.Class="Button" ThemeImage.Part="4" ThemeImage.State="1" /><TextBlock Text="GroupBox" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="120" Height="28" ThemeImage.Class="Tab" ThemeImage.Part="5" ThemeImage.State="3" /><TextBlock Text="Tab" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="200" Height="22" ThemeImage.Class="Menu" ThemeImage.Part="14" ThemeImage.State="1" /><TextBlock Text="Menu item" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="200" Height="40" ThemeImage.Class="Tooltip" ThemeImage.Part="1" ThemeImage.State="1" /><TextBlock Text="Tooltip" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><HackImage Width="200" Height="26" ThemeImage.Class="Status" ThemeImage.Part="1" ThemeImage.State="1" /><TextBlock Text="Status" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
                         <TextBlock Text="ThemePart probe" FontWeight="SemiBold" Margin="0,8,0,0" />
                         <WrapPanel Margin="0,6,0,0">
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="TrackBar" PartId="9" StateId="1" Width="240" Height="18" /><TextBlock Text="TICS 9" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="TrackBar" PartId="10" StateId="1" Width="18" Height="100" /><TextBlock Text="TICSVERT 10" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="5" StateId="1" Width="200" Height="27" /><TextBlock Text="Combo RO 5" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="5" StateId="2" Width="200" Height="27" /><TextBlock Text="Combo RO 5 s2" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="1" StateId="1" Width="18" Height="22" /><TextBlock Text="DD 1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="1" StateId="2" Width="18" Height="22" /><TextBlock Text="DD 2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="1" StateId="3" Width="18" Height="22" /><TextBlock Text="DD 3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Combobox" PartId="1" StateId="4" Width="18" Height="22" /><TextBlock Text="DD 4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Header" PartId="2" StateId="1" Width="40" Height="22" /><TextBlock Text="Header 2" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><pt:ThemePart ClassName="Header" PartId="3" StateId="1" Width="40" Height="22" /><TextBlock Text="Header 3" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="TrackBar" PartId="9" StateId="1" Width="240" Height="18" /><TextBlock Text="TICS 9" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="TrackBar" PartId="10" StateId="1" Width="18" Height="100" /><TextBlock Text="TICSVERT 10" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="5" StateId="1" Width="200" Height="27" /><TextBlock Text="Combo RO 5" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="5" StateId="2" Width="200" Height="27" /><TextBlock Text="Combo RO 5 s2" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="1" StateId="1" Width="18" Height="22" /><TextBlock Text="DD 1 Normal" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="1" StateId="2" Width="18" Height="22" /><TextBlock Text="DD 2 Hot" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="1" StateId="3" Width="18" Height="22" /><TextBlock Text="DD 3 Pressed" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Combobox" PartId="1" StateId="4" Width="18" Height="22" /><TextBlock Text="DD 4 Disabled" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Header" PartId="2" StateId="1" Width="40" Height="22" /><TextBlock Text="Header 2" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><ThemePart ClassName="Header" PartId="3" StateId="1" Width="40" Height="22" /><TextBlock Text="Header 3" FontSize="10" HorizontalAlignment="Center" /></StackPanel>
                         </WrapPanel>
                     </StackPanel>
                 </Border>
@@ -168,35 +166,35 @@
                                 <TextBlock Text="TaskBar part 1 &#8212; TBP_BACKGROUNDBOTTOM" FontWeight="SemiBold" />
                                 <TextBlock Text="bottom edge (horizontal bar)" FontSize="10" Foreground="Gray" Margin="0,1,0,4" />
                                 <Border Width="330" Height="36" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundBottom}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundBottom}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TaskBar part 5 &#8212; TBP_SIZINGBARBOTTOM" FontWeight="SemiBold" />
                                 <TextBlock Text="sizing bar (bottom edge)" FontSize="10" Foreground="Gray" Margin="0,1,0,4" />
                                 <Border Width="330" Height="20" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarSizingBarBottom}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarSizingBarBottom}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TaskBar part 2 &#8212; TBP_BACKGROUNDRIGHT" FontWeight="SemiBold" />
                                 <TextBlock Text="right edge (vertical bar)" FontSize="10" Foreground="Gray" Margin="0,1,0,4" />
                                 <Border Width="60" Height="120" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundRight}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundRight}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TaskBar bottom rotated 90&#176; CCW" FontWeight="SemiBold" />
                                 <TextBlock Text="derived vertical (TBP_BACKGROUNDBOTTOM, -90&#176;)" FontSize="10" Foreground="Gray" Margin="0,1,0,4" />
                                 <Border Width="60" Height="120" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundBottomRotated}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundBottomRotated}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TrayNotify [TrayNotifyHoriz] part 1 &#8212; TNP_BACKGROUND" FontWeight="SemiBold" />
                                 <TextBlock Text="bottom edge (notification area)" FontSize="10" Foreground="Gray" Margin="0,1,0,4" />
                                 <Border Width="200" Height="36" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TrayNotifyBackground}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TrayNotifyBackground}}" />
                                 </Border>
                             </StackPanel>
                         </WrapPanel>
@@ -204,12 +202,12 @@
                             <TextBlock Text="Taskbar foreground:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" />
                             <Border Width="330" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="#FF303342">
                                 <TextBlock Text="Taskbar foreground"
-                                           Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarForeground}}"
+                                           Foreground="{DynamicResource {x:Static ThemeResourceKeys.TaskbarForeground}}"
                                            Margin="8,0,0,0" VerticalAlignment="Center" />
                             </Border>
                             <Border Width="220" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="#FF303342" Margin="16,0,0,0">
                                 <TextBlock Text="TrayNotify foreground"
-                                           Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.TrayNotifyForeground}}"
+                                           Foreground="{DynamicResource {x:Static ThemeResourceKeys.TrayNotifyForeground}}"
                                            Margin="8,0,0,0" VerticalAlignment="Center" />
                             </Border>
                             <TextBlock Text="ThemeTaskbarForegroundBrush / ThemeTrayNotifyForegroundBrush" Foreground="Gray" FontSize="10" VerticalAlignment="Center" Margin="10,0,0,0" />
@@ -221,12 +219,12 @@
                                    Text="Same ControlTemplate content, same uxTheme part; only the element type differs. Each box below is Auto-width (HorizontalAlignment=Left) and sits directly in a vertical StackPanel, so the panel offers it a finite width and the box's width IS the element's DesiredSize. HackImage hands the offered width back as its desired size (once its part has loaded), so its box can span the whole row. HackBorder no longer claims the bitmap at all: like the reference Slice9Image it reports only the fixed slice border (HackThickness plus BorderThickness), so its box collapses to that floor and the parent decides the rest. With a slice thickness of 3 the floor is 6 px, so the box collapses to the slice border; the parent decides the rest. That is why a SizeToContent window grows with one and not the other. The printed widths are ActualWidth bindings, so the numbers come from the layout pass rather than from this caption." />
                         <TextBlock Text="HackImage (values the offered size back)" FontWeight="SemiBold" />
                         <Border x:Name="MeasureImageBox" HorizontalAlignment="Left" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                            <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundBottom}}" />
+                            <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundBottom}}" />
                         </Border>
                         <TextBlock Text="{Binding ActualWidth, ElementName=MeasureImageBox, StringFormat=measured width {0:F0} px}" Foreground="Gray" FontSize="10" Margin="0,2,0,0" />
                         <TextBlock Text="HackBorder (only the slice border, like Slice9Image)" FontWeight="SemiBold" Margin="0,8,0,0" />
                         <Border x:Name="MeasureBorderBox" HorizontalAlignment="Left" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                            <pt:HackBorder HackThickness="3" th:ThemeImage.Class="TaskBar" th:ThemeImage.Part="1" th:ThemeImage.State="0" th:ThemeImage.RenderMode="Natural" th:ThemeImage.PreserveAlpha="True" />
+                            <HackBorder HackThickness="3" ThemeImage.Class="TaskBar" ThemeImage.Part="1" ThemeImage.State="0" ThemeImage.RenderMode="Natural" ThemeImage.PreserveAlpha="True" />
                         </Border>
                         <TextBlock Text="{Binding ActualWidth, ElementName=MeasureBorderBox, StringFormat=measured width {0:F0} px}" Foreground="Gray" FontSize="10" Margin="0,2,0,0" />
                         <TextBlock TextWrapping="Wrap" Foreground="Gray" FontSize="10" Margin="0,6,0,0"
@@ -239,32 +237,32 @@
                         <WrapPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="theme part, no child" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
-                                <pt:HackBorder Width="240" Height="36" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                                <HackBorder Width="240" Height="36" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                                BorderThickness="2" CornerRadius="8"
-                                               th:ThemeImage.Class="TaskBar" th:ThemeImage.Part="1" th:ThemeImage.State="0" />
+                                               ThemeImage.Class="TaskBar" ThemeImage.Part="1" ThemeImage.State="0" />
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="child + Padding=12 + Foreground" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
-                                <pt:HackBorder Width="240" Height="72" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                                <HackBorder Width="240" Height="72" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                                BorderThickness="2" CornerRadius="8" Padding="12"
                                                Foreground="#FF203040"
-                                               th:ThemeImage.Class="TaskBar" th:ThemeImage.Part="1" th:ThemeImage.State="0">
+                                               ThemeImage.Class="TaskBar" ThemeImage.Part="1" ThemeImage.State="0">
                                     <TextBlock TextWrapping="Wrap" Text="child content inherits Foreground, inset by Padding" />
-                                </pt:HackBorder>
+                                </HackBorder>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="SubClass reaches the part" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
-                                <pt:HackBorder Width="240" Height="36" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                                <HackBorder Width="240" Height="36" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                                BorderThickness="2" CornerRadius="8"
-                                               th:ThemeImage.Class="TrayNotify" th:ThemeImage.SubClass="TrayNotifyHoriz"
-                                               th:ThemeImage.Part="1" th:ThemeImage.State="0" />
+                                               ThemeImage.Class="TrayNotify" ThemeImage.SubClass="TrayNotifyHoriz"
+                                               ThemeImage.Part="1" ThemeImage.State="0" />
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="no theme part: Background only" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
-                                <pt:HackBorder Width="240" Height="36" Background="#FFC8DCF0" BorderBrush="#FF6080A0"
+                                <HackBorder Width="240" Height="36" Background="#FFC8DCF0" BorderBrush="#FF6080A0"
                                                BorderThickness="2" CornerRadius="8" Padding="12">
                                     <TextBlock Text="plain Border usage" />
-                                </pt:HackBorder>
+                                </HackBorder>
                             </StackPanel>
                         </WrapPanel>
 
@@ -276,19 +274,19 @@
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TaskbarBackgroundBottomBounded" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
                                 <Border Width="240" Height="36" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundBottomBounded}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundBottomBounded}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TaskbarBackgroundRightBounded" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
                                 <Border Width="60" Height="120" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TaskbarBackgroundRightBounded}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TaskbarBackgroundRightBounded}}" />
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="0,0,16,10">
                                 <TextBlock Text="TrayNotifyBackgroundBounded" FontSize="10" Foreground="Gray" Margin="0,0,0,4" />
                                 <Border Width="200" Height="36" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0">
-                                    <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.TrayNotifyBackgroundBounded}}" />
+                                    <Control Template="{DynamicResource {x:Static ThemeResourceKeys.TrayNotifyBackgroundBounded}}" />
                                 </Border>
                             </StackPanel>
                         </WrapPanel>
@@ -297,67 +295,67 @@
                         <TextBlock Text="HackBorder + ThemeImage.TransitionDuration" FontWeight="SemiBold" Margin="0,12,0,4" />
                         <TextBlock TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"
                                    Text="Hover the box: the state goes 1 to 2 through a Style trigger on the HackBorder itself. That exercises the whole descriptor path — the trigger writes ThemeImage.State on the border, the indirection hands it to the inner HackImage, and the cross-fade runs there. It uses Button part 1 (BP_PUSHBUTTON) because that part actually defines both states; a hover on a taskbar part proves nothing. The fade length comes from the ThemeTransitionDuration resource: 0 in the plain theme (instant switch) and 0.15s in theme.withtransition, so run with --transition to see the animation." />
-                        <pt:HackBorder x:Name="TransitionProbe" Width="240" Height="40" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                        <HackBorder x:Name="TransitionProbe" Width="240" Height="40" Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                        BorderThickness="2" CornerRadius="8"
-                                       th:ThemeImage.Class="Button" th:ThemeImage.Part="1"
-                                       th:ThemeImage.TransitionDuration="{DynamicResource ThemeTransitionDuration}">
-                            <pt:HackBorder.Style>
-                                <Style TargetType="pt:HackBorder">
+                                       ThemeImage.Class="Button" ThemeImage.Part="1"
+                                       ThemeImage.TransitionDuration="{DynamicResource ThemeTransitionDuration}">
+                            <HackBorder.Style>
+                                <Style TargetType="HackBorder">
                                     <!-- Default state must be a Style SETTER here, never a local attribute
                                          on the HackBorder element. A local value outranks Style triggers,
-                                         so writing th:ThemeImage.State on the element itself pins it and
+                                         so writing ThemeImage.State on the element itself pins it and
                                          the trigger below can never win (WPF precedence, local > trigger). -->
-                                    <Setter Property="th:ThemeImage.State" Value="1" />
+                                    <Setter Property="ThemeImage.State" Value="1" />
                                     <Style.Triggers>
                                         <Trigger Property="UIElement.IsMouseOver" Value="True">
-                                            <Setter Property="th:ThemeImage.State" Value="2" />
+                                            <Setter Property="ThemeImage.State" Value="2" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
-                            </pt:HackBorder.Style>
-                        </pt:HackBorder>
+                            </HackBorder.Style>
+                        </HackBorder>
 
                         <!-- The two Aero states differ only slightly in fill (E1E1E1 to E5F1FB), so the
                              number is the reliable way to see that the trigger really fired. -->
                         <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                             <TextBlock Text="ThemeImage.State right now: " Foreground="Gray" />
                             <TextBlock x:Name="StateReadout" FontWeight="Bold" Foreground="#FF005499"
-                                       Text="{Binding Path=(th:ThemeImage.State), ElementName=TransitionProbe}" />
+                                       Text="{Binding Path=(ThemeImage.State), ElementName=TransitionProbe}" />
                             <TextBlock Text="   (1 = normal, 2 = hot)" Foreground="Gray" />
                         </StackPanel>
 
                         <!-- ============ A Button whose whole visual is one HackBorder ============ -->
                         <TextBlock Text="Button built from a single HackBorder" FontWeight="SemiBold" Margin="0,14,0,4" />
                         <TextBlock TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"
-                                   Text="A normal Button whose ControlTemplate root is one pt:HackBorder and nothing else: no Button chrome, no Border, no theme Button style. Everything visible comes from HackBorder — Background, BorderBrush, BorderThickness, CornerRadius and Padding are Border properties, the surface is Button part 1, and the label is the Button's Content going through the HackBorder child slot. The three states are driven from the templated parent: hover goes to 2, pressed to 3, disabled to 4. Hover it to see the cross-fade when running with --transition." />
+                                   Text="A normal Button whose ControlTemplate root is one HackBorder and nothing else: no Button chrome, no Border, no theme Button style. Everything visible comes from HackBorder — Background, BorderBrush, BorderThickness, CornerRadius and Padding are Border properties, the surface is Button part 1, and the label is the Button's Content going through the HackBorder child slot. The three states are driven from the templated parent: hover goes to 2, pressed to 3, disabled to 4. Hover it to see the cross-fade when running with --transition." />
                         <WrapPanel>
                             <Button Padding="0" Background="Transparent" BorderThickness="0" Cursor="Hand"
                                     HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <pt:HackBorder Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                                        <HackBorder Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                                        BorderThickness="1" CornerRadius="6" Padding="16,7"
-                                                       th:ThemeImage.Class="Button" th:ThemeImage.Part="1"
-                                                       th:ThemeImage.RenderMode="Natural" th:ThemeImage.PreserveAlpha="True"
-                                                       th:ThemeImage.TransitionDuration="{DynamicResource ThemeTransitionDuration}">
-                                            <pt:HackBorder.Style>
-                                                <Style TargetType="pt:HackBorder">
-                                                    <Setter Property="th:ThemeImage.State" Value="1" />
+                                                       ThemeImage.Class="Button" ThemeImage.Part="1"
+                                                       ThemeImage.RenderMode="Natural" ThemeImage.PreserveAlpha="True"
+                                                       ThemeImage.TransitionDuration="{DynamicResource ThemeTransitionDuration}">
+                                            <HackBorder.Style>
+                                                <Style TargetType="HackBorder">
+                                                    <Setter Property="ThemeImage.State" Value="1" />
                                                     <Style.Triggers>
                                                         <Trigger Property="UIElement.IsMouseOver" Value="True">
-                                                            <Setter Property="th:ThemeImage.State" Value="2" />
+                                                            <Setter Property="ThemeImage.State" Value="2" />
                                                         </Trigger>
                                                         <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-                                                            <Setter Property="th:ThemeImage.State" Value="3" />
+                                                            <Setter Property="ThemeImage.State" Value="3" />
                                                         </DataTrigger>
                                                         <Trigger Property="UIElement.IsEnabled" Value="False">
-                                                            <Setter Property="th:ThemeImage.State" Value="4" />
+                                                            <Setter Property="ThemeImage.State" Value="4" />
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </pt:HackBorder.Style>
+                                            </HackBorder.Style>
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </pt:HackBorder>
+                                        </HackBorder>
                                     </ControlTemplate>
                                 </Button.Template>
                                 <TextBlock Text="HackBorder button" />
@@ -367,22 +365,22 @@
                                     IsEnabled="False">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <pt:HackBorder Background="#FFFFF0C0" BorderBrush="#FF6080A0"
+                                        <HackBorder Background="#FFFFF0C0" BorderBrush="#FF6080A0"
                                                        BorderThickness="1" CornerRadius="6" Padding="16,7"
-                                                       th:ThemeImage.Class="Button" th:ThemeImage.Part="1"
-                                                       th:ThemeImage.RenderMode="Natural" th:ThemeImage.PreserveAlpha="True">
-                                            <pt:HackBorder.Style>
-                                                <Style TargetType="pt:HackBorder">
-                                                    <Setter Property="th:ThemeImage.State" Value="1" />
+                                                       ThemeImage.Class="Button" ThemeImage.Part="1"
+                                                       ThemeImage.RenderMode="Natural" ThemeImage.PreserveAlpha="True">
+                                            <HackBorder.Style>
+                                                <Style TargetType="HackBorder">
+                                                    <Setter Property="ThemeImage.State" Value="1" />
                                                     <Style.Triggers>
                                                         <Trigger Property="UIElement.IsEnabled" Value="False">
-                                                            <Setter Property="th:ThemeImage.State" Value="4" />
+                                                            <Setter Property="ThemeImage.State" Value="4" />
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </pt:HackBorder.Style>
+                                            </HackBorder.Style>
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </pt:HackBorder>
+                                        </HackBorder>
                                     </ControlTemplate>
                                 </Button.Template>
                                 <TextBlock Text="disabled" />
@@ -396,7 +394,7 @@
                 <Border BorderBrush="#FFB8B8B8" BorderThickness="1" Padding="12" Margin="0,0,0,14">
                 <StackPanel>
                     <StackPanel.Resources>
-                        <Style x:Key="DemoHackButton" TargetType="{x:Type pt:HackButton}">
+                        <Style x:Key="DemoHackButton" TargetType="{x:Type HackButton}">
                             <Setter Property="NormalSource" Value="{x:Static local:HackButtonDemoSources.Normal}" />
                             <Setter Property="HoverSource" Value="{x:Static local:HackButtonDemoSources.Hover}" />
                             <Setter Property="ActiveSource" Value="{x:Static local:HackButtonDemoSources.Active}" />
@@ -410,7 +408,7 @@
                             <Setter Property="Margin" Value="0,0,8,8" />
                             <Setter Property="Cursor" Value="Hand" />
                         </Style>
-                        <Style x:Key="DemoHackRepeatButton" TargetType="{x:Type pt:HackRepeatButton}">
+                        <Style x:Key="DemoHackRepeatButton" TargetType="{x:Type HackRepeatButton}">
                             <Setter Property="NormalSource" Value="{x:Static local:HackButtonDemoSources.Normal}" />
                             <Setter Property="HoverSource" Value="{x:Static local:HackButtonDemoSources.Hover}" />
                             <Setter Property="ActiveSource" Value="{x:Static local:HackButtonDemoSources.Active}" />
@@ -424,7 +422,7 @@
                             <Setter Property="Margin" Value="0,0,8,8" />
                             <Setter Property="Cursor" Value="Hand" />
                         </Style>
-                        <Style x:Key="DemoHackToggleButton" TargetType="{x:Type pt:HackToggleButton}">
+                        <Style x:Key="DemoHackToggleButton" TargetType="{x:Type HackToggleButton}">
                             <Setter Property="NormalSource" Value="{x:Static local:HackButtonDemoSources.Normal}" />
                             <Setter Property="HoverSource" Value="{x:Static local:HackButtonDemoSources.Hover}" />
                             <Setter Property="ActiveSource" Value="{x:Static local:HackButtonDemoSources.Active}" />
@@ -438,7 +436,7 @@
                             <Setter Property="Margin" Value="0,0,8,8" />
                             <Setter Property="Cursor" Value="Hand" />
                         </Style>
-                        <Style x:Key="DemoHackButtonNormalOnly" TargetType="{x:Type pt:HackButton}">
+                        <Style x:Key="DemoHackButtonNormalOnly" TargetType="{x:Type HackButton}">
                             <Setter Property="NormalSource" Value="{x:Static local:HackButtonDemoSources.Normal}" />
                             <Setter Property="HackThickness" Value="3" />
                             <Setter Property="TransitionDuration" Value="0:0:0.15" />
@@ -452,16 +450,16 @@
                 <TextBlock TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,8"
                            Text="Convenience controls, deliberately not part of the theme: you hand each one five bitmaps plus a HackThickness, and it picks between them from IsMouseOver / IsPressed / IsKeyboardFocused / IsEnabled. The art below is the one WpfApplicationTest uses — PNGFILE1150_1 through PNGFILE1154_1, 109x24 with a 3 pixel border — so HackThickness=&quot;3&quot; leaves the rounded corners alone while the middle stretches. Hover, press, Tab onto and disable them: the image swaps, and a missing state falls back to the one before it. TransitionDuration is 0.15s here, so the swap is a cross-fade through the same HackImageTransitions code the attached properties use; set it to zero for an instant swap. HackToggleButton carries five more — CheckedNormal / CheckedHover / CheckedActive / CheckedFocus / CheckedDisabled — used only while IsChecked is true; leave them unset and it falls back to the plain five, with a checked button resting on ActiveSource. Once any Checked* is set, the checked state uses its own set: a missing checked variant falls back to CheckedNormal, never to the unchecked image of that state." />
                 <WrapPanel>
-                    <pt:HackButton Style="{StaticResource DemoHackButton}" Content="HackButton" />
-                    <pt:HackButton Style="{StaticResource DemoHackButton}" Content="disabled" IsEnabled="False" />
-                    <pt:HackRepeatButton Style="{StaticResource DemoHackRepeatButton}" Content="HackRepeatButton" />
-                    <pt:HackToggleButton Style="{StaticResource DemoHackToggleButton}" Content="toggle, unchecked" />
-                    <pt:HackToggleButton Style="{StaticResource DemoHackToggleButton}" Content="toggle, checked" IsChecked="True" />
+                    <HackButton Style="{StaticResource DemoHackButton}" Content="HackButton" />
+                    <HackButton Style="{StaticResource DemoHackButton}" Content="disabled" IsEnabled="False" />
+                    <HackRepeatButton Style="{StaticResource DemoHackRepeatButton}" Content="HackRepeatButton" />
+                    <HackToggleButton Style="{StaticResource DemoHackToggleButton}" Content="toggle, unchecked" />
+                    <HackToggleButton Style="{StaticResource DemoHackToggleButton}" Content="toggle, checked" IsChecked="True" />
                 </WrapPanel>
                 <WrapPanel>
-                    <pt:HackButton Style="{StaticResource DemoHackButton}" Content="stretched — the 3px border stays 3px" />
-                    <pt:HackButton Style="{StaticResource DemoHackButton}" Content="taller" Padding="14,14" />
-                    <pt:HackButton Style="{StaticResource DemoHackButtonNormalOnly}" Content="normal only — no hover image to fall back to" />
+                    <HackButton Style="{StaticResource DemoHackButton}" Content="stretched — the 3px border stays 3px" />
+                    <HackButton Style="{StaticResource DemoHackButton}" Content="taller" Padding="14,14" />
+                    <HackButton Style="{StaticResource DemoHackButtonNormalOnly}" Content="normal only — no hover image to fall back to" />
                 </WrapPanel>
 
                 </StackPanel>
@@ -474,42 +472,42 @@
                         <WrapPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <TextBlock Text="Edge fill / TMT_EDGEFILLCOLOR 3808" FontSize="10" Foreground="Gray" />
-                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeFill}}" />
+                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeFill}}" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <TextBlock Text="Edge light / TMT_EDGELIGHTCOLOR 3804" FontSize="10" Foreground="Gray" />
-                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeLight}}" />
+                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeLight}}" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <TextBlock Text="Edge highlight / TMT_EDGEHIGHLIGHTCOLOR 3805" FontSize="10" Foreground="Gray" />
-                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeHighlight}}" />
+                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeHighlight}}" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <TextBlock Text="Edge shadow / TMT_EDGESHADOWCOLOR 3806" FontSize="10" Foreground="Gray" />
-                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeShadow}}" />
+                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeShadow}}" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <TextBlock Text="Edge dark shadow / TMT_EDGEDKSHADOWCOLOR 3807" FontSize="10" Foreground="Gray" />
-                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeDarkShadow}}" />
+                                <Border Width="140" Height="28" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeDarkShadow}}" />
                             </StackPanel>
                         </WrapPanel>
                         <TextBlock Text="Close button / Tooltip part 5" FontWeight="SemiBold" Margin="0,8,0,4" />
                         <WrapPanel>
                             <StackPanel Margin="0,0,12,8">
                                 <Border Width="64" Height="48" BorderBrush="#FF808080" BorderThickness="1" Background="#FFFFF0C0" HorizontalAlignment="Left">
-                                    <Image Source="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipCloseNormalImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <Image Source="{DynamicResource {x:Static ThemeResourceKeys.ToolTipCloseNormalImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <TextBlock Text="Normal (alpha)" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" Margin="0,2,0,0" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
-                                <Border Width="64" Height="48" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeFill}}" HorizontalAlignment="Left">
-                                    <Image Source="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipCloseHotImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Border Width="64" Height="48" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeFill}}" HorizontalAlignment="Left">
+                                    <Image Source="{DynamicResource {x:Static ThemeResourceKeys.ToolTipCloseHotImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <TextBlock Text="Hot" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" Margin="0,2,0,0" />
                             </StackPanel>
                             <StackPanel Margin="0,0,12,8">
-                                <Border Width="64" Height="48" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipEdgeFill}}" HorizontalAlignment="Left">
-                                    <Image Source="{DynamicResource {x:Static th:ThemeResourceKeys.ToolTipClosePressedImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Border Width="64" Height="48" BorderBrush="#FF808080" BorderThickness="1" Background="{DynamicResource {x:Static ThemeResourceKeys.ToolTipEdgeFill}}" HorizontalAlignment="Left">
+                                    <Image Source="{DynamicResource {x:Static ThemeResourceKeys.ToolTipClosePressedImage}}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <TextBlock Text="Pressed" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" Margin="0,2,0,0" />
                             </StackPanel>
@@ -526,22 +524,22 @@
                             <TextBlock FontSize="10" Foreground="Gray" Margin="0,0,0,4">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="Measured corners: TL {0:0.##}  TR {1:0.##}  BL {2:0.##}  BR {3:0.##}">
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.NormalWindowTopLeftCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.NormalWindowTopRightCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.NormalWindowBottomLeftCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.NormalWindowBottomRightCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.NormalWindowTopLeftCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.NormalWindowTopRightCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.NormalWindowBottomLeftCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.NormalWindowBottomRightCornerRadius}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <Grid Width="280" Height="170">
-                                <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.NormalWindowBorder}}" />
-                                <Grid VerticalAlignment="Top" Height="{DynamicResource {x:Static th:ThemeResourceKeys.NormalWindowTitleHeight}}">
-                                    <TextBlock Text="Normal window" Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.NormalWindowForeground}}"
-                                               FontSize="{DynamicResource {x:Static th:ThemeResourceKeys.NormalWindowTitleFontSize}}"
+                                <Control Template="{DynamicResource {x:Static ThemeResourceKeys.NormalWindowBorder}}" />
+                                <Grid VerticalAlignment="Top" Height="{DynamicResource {x:Static ThemeResourceKeys.NormalWindowTitleHeight}}">
+                                    <TextBlock Text="Normal window" Foreground="{DynamicResource {x:Static ThemeResourceKeys.NormalWindowForeground}}"
+                                               FontSize="{DynamicResource {x:Static ThemeResourceKeys.NormalWindowTitleFontSize}}"
                                                FontWeight="SemiBold" Margin="10,0,8,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                 </Grid>
-                                <TextBlock Text="Window content" Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.WindowContentForeground}}"
-                                           Margin="{DynamicResource {x:Static th:ThemeResourceKeys.NormalWindowContentMargin}}" />
+                                <TextBlock Text="Window content" Foreground="{DynamicResource {x:Static ThemeResourceKeys.WindowContentForeground}}"
+                                           Margin="{DynamicResource {x:Static ThemeResourceKeys.NormalWindowContentMargin}}" />
                             </Grid>
                         </StackPanel>
                         <StackPanel Margin="0,0,18,12">
@@ -550,22 +548,22 @@
                             <TextBlock FontSize="10" Foreground="Gray" Margin="0,0,0,4">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="Measured corners: TL {0:0.##}  TR {1:0.##}  BL {2:0.##}  BR {3:0.##}">
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.ToolWindowTopLeftCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.ToolWindowTopRightCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.ToolWindowBottomLeftCornerRadius}" />
-                                        <Binding Source="{x:Static th:ThemeWindowMetrics.ToolWindowBottomRightCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.ToolWindowTopLeftCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.ToolWindowTopRightCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.ToolWindowBottomLeftCornerRadius}" />
+                                        <Binding Source="{x:Static ThemeWindowMetrics.ToolWindowBottomRightCornerRadius}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                             <Grid Width="280" Height="170">
-                                <Control Template="{DynamicResource {x:Static th:ThemeResourceKeys.ToolWindowBorder}}" />
-                                <Grid VerticalAlignment="Top" Height="{DynamicResource {x:Static th:ThemeResourceKeys.ToolWindowTitleHeight}}">
-                                    <TextBlock Text="Tool window" Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.ToolWindowForeground}}"
-                                               FontSize="{DynamicResource {x:Static th:ThemeResourceKeys.ToolWindowTitleFontSize}}"
+                                <Control Template="{DynamicResource {x:Static ThemeResourceKeys.ToolWindowBorder}}" />
+                                <Grid VerticalAlignment="Top" Height="{DynamicResource {x:Static ThemeResourceKeys.ToolWindowTitleHeight}}">
+                                    <TextBlock Text="Tool window" Foreground="{DynamicResource {x:Static ThemeResourceKeys.ToolWindowForeground}}"
+                                               FontSize="{DynamicResource {x:Static ThemeResourceKeys.ToolWindowTitleFontSize}}"
                                                FontWeight="SemiBold" Margin="10,0,8,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                 </Grid>
-                                <TextBlock Text="Window content" Foreground="{DynamicResource {x:Static th:ThemeResourceKeys.WindowContentForeground}}"
-                                           Margin="{DynamicResource {x:Static th:ThemeResourceKeys.ToolWindowContentMargin}}" />
+                                <TextBlock Text="Window content" Foreground="{DynamicResource {x:Static ThemeResourceKeys.WindowContentForeground}}"
+                                           Margin="{DynamicResource {x:Static ThemeResourceKeys.ToolWindowContentMargin}}" />
                             </Grid>
                         </StackPanel>
                     </WrapPanel>
@@ -659,15 +657,15 @@
                             <TextBlock Text="ProgressBar" FontWeight="SemiBold" Margin="0,12,0,4" />
                             <ProgressBar Height="18" Value="40" Maximum="100" />
                             <ProgressBar Height="18" Margin="0,5,0,0" Value="40" Maximum="100" Tag="Smooth" />
-                            <ProgressBar Height="18" Margin="0,5,0,0" Value="40" Maximum="100" th:ThemeProgress.State="Paused" />
-                            <ProgressBar Height="18" Margin="0,5,0,0" Value="40" Maximum="100" th:ThemeProgress.State="Error" />
+                            <ProgressBar Height="18" Margin="0,5,0,0" Value="40" Maximum="100" ThemeProgress.State="Paused" />
+                            <ProgressBar Height="18" Margin="0,5,0,0" Value="40" Maximum="100" ThemeProgress.State="Error" />
                             <ProgressBar Height="18" Margin="0,5,0,0" IsIndeterminate="True" />
                             <TextBlock Text="chunked / smooth (overlay) / paused / error / waiting" FontSize="10" Margin="0,3,0,0" />
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <ProgressBar Orientation="Vertical" Width="18" Height="80" Value="40" Maximum="100" />
                                 <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" Value="40" Maximum="100" Tag="Smooth" />
-                                <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" Value="40" Maximum="100" th:ThemeProgress.State="Paused" />
-                                <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" Value="40" Maximum="100" th:ThemeProgress.State="Error" />
+                                <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" Value="40" Maximum="100" ThemeProgress.State="Paused" />
+                                <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" Value="40" Maximum="100" ThemeProgress.State="Error" />
                                 <ProgressBar Orientation="Vertical" Width="18" Height="80" Margin="8,0,0,0" IsIndeterminate="True" />
                                 <TextBlock Text="vertical chunked / smooth / paused / error / waiting" FontSize="10" Margin="6,0,0,0" VerticalAlignment="Bottom" />
                             </StackPanel>
