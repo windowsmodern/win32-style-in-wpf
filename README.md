@@ -467,6 +467,13 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1 -Configuration Release -Sel
 
 `build.ps1 -SelfTest` runs both plain and transition self-tests and checks the logs.
 
+### Versioning
+
+`AssemblyVersion` is pinned at **1.0.13.0** for 1.x binary compatibility and changes only on an
+explicit request. The file version (and the NuGet package version) follows the release tag:
+`v1.0.17` produces `FileVersion 1.0.17`. CI reads the tag and passes `-FileVersion`, so a release
+needs no version edit in the source tree.
+
 ## Compatibility and limitations
 
 - .NET Framework 4.0 or later, C# 6, AnyCPU; Windows XP or later (WPF 4.0 + UXTHEME).

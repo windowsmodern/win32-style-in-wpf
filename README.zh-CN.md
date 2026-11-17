@@ -416,6 +416,12 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1 -Configuration Release -Sel
 
 `build.ps1 -SelfTest` 会依次运行无过渡/带过渡两套自检并检查日志。
 
+### 版本号规则
+
+`AssemblyVersion` 固定为 **1.0.13.0**（1.x 二进制兼容），只有明确要求时才改。文件版本（以及 NuGet
+包版本）跟随发布标签：`v1.0.17` 生成 `FileVersion 1.0.17`。CI 从标签读取版本并传 `-FileVersion`，
+发布新版本不需要改源码里的任何版本号。
+
 ## 兼容性与限制
 
 - .NET Framework 4.0 及以上、C# 6、AnyCPU；Windows XP 及以上（WPF 4.0 + UXTHEME）。
