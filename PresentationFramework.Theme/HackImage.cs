@@ -12,11 +12,25 @@ namespace System.Windows.Controls
 		private readonly BitmapSource [] _slices = new BitmapSource [9];
 		private BitmapSource _wholeImage;
 		private BitmapImage _pendingBitmapImage;
-		public HackImage () { SnapsToDevicePixels = true; UseLayoutRounding = true; ApplyScalingMode (); }
-		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register (nameof (Source), typeof (ImageSource), typeof (HackImage), new FrameworkPropertyMetadata (null, FrameworkPropertyMetadataOptions.AffectsRender, OnSourceChanged));
+		private WeakReference _stretchedImage;
+		private int _stretchedPixelWidth, _stretchedPixelHeight;
+		private double _stretchedDpiX, _stretchedDpiY;
+		public HackImage () { SnapsToDevicePixels = true; UseLayoutRounding = true; ApplyScalingMode (); Unloaded += OnImageUnloaded; }
+		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register (nameof (Source), typeof (ImageSource), typeof (HackImage), new FrameworkPropertyMetadata (null, FrameworkPropertyMetadataOptions.AffectsRender, OnSourcePropertyChanged));
 		/// <summary>图像源。仅支持 <see cref="BitmapSource"/>（含 <see cref="BitmapImage"/>、<see cref="BitmapFrame"/>）。</summary>
 		public ImageSource Source { get { return (ImageSource)GetValue (SourceProperty); } set { SetValue (SourceProperty, value); } }
-		private static void OnSourceChanged (DependencyObject d, DependencyPropertyChangedEventArgs e) { var c = (HackImage)d; c.UnsubscribePendingBitmap (); c.SubscribePendingBitmap (e.NewValue as BitmapImage); c.UpdateSlices (); }
+		/// <summary>Source 真正变化时触发：<see cref="Source"/> 被替换，或者 <see cref="BitmapImage"/> 异步下载完成/失败、有效图像因此改变。过渡动画换帧（<see cref="SetSliceImages"/>）不触发。</summary>
+		public event EventHandler SourceChanged;
+		/// <summary>触发 <see cref="SourceChanged"/>；子类可重写以拦截。</summary>
+		protected virtual void OnSourceChanged (EventArgs e) { var handler = SourceChanged; if (handler != null) handler (this, e); }
+		private static void OnSourcePropertyChanged (DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var c = (HackImage)d;
+			c.UnsubscribePendingBitmap ();
+			c.SubscribePendingBitmap (e.NewValue as BitmapImage);
+			c.UpdateSlices ();
+			c.OnSourceChanged (EventArgs.Empty);
+		}
 		public static readonly DependencyProperty HackThicknessProperty = DependencyProperty.Register (nameof (HackThickness), typeof (Thickness), typeof (HackImage), new FrameworkPropertyMetadata (new Thickness (0), FrameworkPropertyMetadataOptions.AffectsRender, OnHackThicknessChanged));
 		/// <summary>九宫格切片（Left, Top, Right, Bottom），单位为图像像素。</summary>
 		public Thickness HackThickness { get { return (Thickness)GetValue (HackThicknessProperty); } set { SetValue (HackThicknessProperty, value); } }
@@ -29,7 +43,7 @@ namespace System.Windows.Controls
 		/// <summary>位图缩放质量。</summary>
 		public BitmapScalingMode ScalingMode { get { return (BitmapScalingMode)GetValue (ScalingModeProperty); } set { SetValue (ScalingModeProperty, value); } }
 		private static void OnScalingModeChanged (DependencyObject d, DependencyPropertyChangedEventArgs e) { ((HackImage)d).ApplyScalingMode (); }
-		private void ApplyScalingMode () { RenderOptions.SetBitmapScalingMode (this, ScalingMode); }
+		private void ApplyScalingMode () { RenderOptions.SetBitmapScalingMode (this, ScalingMode); DropStretchedImage (); }
 		public static readonly DependencyProperty ThemeDescriptorSourceProperty = DependencyProperty.Register (nameof (ThemeDescriptorSource), typeof (DependencyObject), typeof (HackImage), new FrameworkPropertyMetadata (null));
 		/// <summary>
 		/// 描述符来源：不为 null 时，ThemeImage 的 Class/SubClass/Part/State 等附加属性从该对象读取，
@@ -37,10 +51,76 @@ namespace System.Windows.Controls
 		/// 为 null 时行为与之前完全一致。
 		/// </summary>
 		public DependencyObject ThemeDescriptorSource { get { return (DependencyObject)GetValue (ThemeDescriptorSourceProperty); } set { SetValue (ThemeDescriptorSourceProperty, value); } }
+		/// <summary>
+		/// 当前渲染尺寸、当前屏幕 DPI 下已经拉伸（九宫格合成）好的位图：Pbgra32、带 alpha。
+		/// <para>按需生成：读取时才渲染，没人读就永不生成。</para>
+		/// <para>勤清理：RenderSize、Source、HackThickness、ScalingMode、DPI 变化和 Unloaded 时立即丢弃缓存；缓存本身是弱引用，没有调用方持有即可被回收。</para>
+		/// <para>只包含控件自身绘制的内容，不含 Opacity、Effect、RenderTransform 和父级裁剪；没有可绘制内容或尚未完成布局时返回 null。</para>
+		/// <para>必须在 UI 线程读取；尺寸很大时按 4 字节/像素占用内存（1920x1080 ≈ 8 MB），不要放进循环或每帧调用。</para>
+		/// </summary>
+		public BitmapSource StretchedImage
+		{
+			get
+			{
+				double dpiX, dpiY;
+				GetDpiScale (out dpiX, out dpiY);
+				return GetStretchedImageCore (dpiX * 96.0, dpiY * 96.0);
+			}
+		}
+		/// <summary>按指定 DPI 生成拉伸后的位图（Pbgra32、带 alpha）；dpi 是每英寸像素数，例如 96、120、144。</summary>
+		public BitmapSource GetStretchedImage (double dpi)
+		{
+			if (double.IsNaN (dpi) || double.IsInfinity (dpi) || dpi <= 0)
+				throw new ArgumentOutOfRangeException (nameof (dpi), "dpi must be a positive number of dots per inch.");
+			return GetStretchedImageCore (dpi, dpi);
+		}
+		/// <summary>丢弃缓存的拉伸位图（调用方已拿到的位图不受影响）；下次读取 <see cref="StretchedImage"/> 时重新生成。</summary>
+		public void InvalidateStretchedImage () { DropStretchedImage (); }
+		private BitmapSource GetStretchedImageCore (double dpiX, double dpiY)
+		{
+			if (!Dispatcher.CheckAccess ())
+				throw new InvalidOperationException ("StretchedImage must be read on the UI thread.");
+			double width = RenderSize.Width, height = RenderSize.Height;
+			if (width <= 0 || height <= 0) return null;
+			if (_wholeImage == null && (_bitmapSource == null || IsAllSlicesNull ())) return null;
+			int pixelWidth = Math.Max (1, (int)Math.Round (width * dpiX / 96.0));
+			int pixelHeight = Math.Max (1, (int)Math.Round (height * dpiY / 96.0));
+			var cached = _stretchedImage == null ? null : _stretchedImage.Target as BitmapSource;
+			if (cached != null && _stretchedPixelWidth == pixelWidth && _stretchedPixelHeight == pixelHeight && _stretchedDpiX == dpiX && _stretchedDpiY == dpiY)
+				return cached;
+			var visual = new DrawingVisual ();
+			RenderOptions.SetBitmapScalingMode (visual, ScalingMode);
+			using (var dc = visual.RenderOpen ())
+				DrawContent (dc, width, height, dpiX / 96.0, dpiY / 96.0);
+			var bitmap = new RenderTargetBitmap (pixelWidth, pixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
+			bitmap.Render (visual);
+			bitmap.Freeze ();
+			_stretchedImage = new WeakReference (bitmap);
+			_stretchedPixelWidth = pixelWidth;
+			_stretchedPixelHeight = pixelHeight;
+			_stretchedDpiX = dpiX;
+			_stretchedDpiY = dpiY;
+			return bitmap;
+		}
+		private void DropStretchedImage () { _stretchedImage = null; }
+		private void OnImageUnloaded (object sender, RoutedEventArgs e) { DropStretchedImage (); }
+		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo) { base.OnRenderSizeChanged (sizeInfo); DropStretchedImage (); }
+		private void GetDpiScale (out double dpiX, out double dpiY)
+		{
+			dpiX = 1.0;
+			dpiY = 1.0;
+			var source = PresentationSource.FromVisual (this);
+			if (source != null && source.CompositionTarget != null)
+			{
+				dpiX = source.CompositionTarget.TransformToDevice.M11;
+				dpiY = source.CompositionTarget.TransformToDevice.M22;
+			}
+		}
 		/// <summary>直接设置 9 片（TL, T, TR, L, C, R, BL, B, BR），用于动画等外部切片场景。</summary>
 		public void SetSliceImages (BitmapSource [] slices)
 		{
 			_wholeImage = null;
+			DropStretchedImage ();
 			if (slices == null || slices.Length != 9) return;
 			for (int i = 0; i < 9; i++) _slices [i] = slices [i];
 			InvalidateVisual ();
@@ -50,6 +130,7 @@ namespace System.Windows.Controls
 		{
 			_wholeImage = image;
 			for (int i = 0; i < 9; i++) _slices [i] = null;
+			DropStretchedImage ();
 			InvalidateVisual ();
 		}
 		protected override Size MeasureOverride (Size availableSize)
@@ -65,6 +146,12 @@ namespace System.Windows.Controls
 			double targetW = RenderSize.Width, targetH = RenderSize.Height;
 			if (targetW <= 0 || targetH <= 0) return;
 			dc.DrawRectangle (Brushes.Transparent, null, new Rect (0, 0, targetW, targetH));
+			double dpiX, dpiY;
+			GetDpiScale (out dpiX, out dpiY);
+			DrawContent (dc, targetW, targetH, dpiX, dpiY);
+		}
+		private void DrawContent (DrawingContext dc, double targetW, double targetH, double dpiX, double dpiY)
+		{
 			if (_wholeImage != null)
 			{
 				dc.DrawImage (_wholeImage, new Rect (0, 0, targetW, targetH));
@@ -81,15 +168,6 @@ namespace System.Windows.Controls
 			if (l + r > targetW && l + r > 0) { double s = targetW / (l + r); l *= s; r *= s; }
 			if (t + b > targetH && t + b > 0) { double s = targetH / (t + b); t *= s; b *= s; }
 			double cw = targetW - l - r, ch = targetH - t - b;
-
-			// 获取当前 DPI 缩放比例 (兼容 .NET 4.0)
-			double dpiX = 1.0, dpiY = 1.0;
-			var source = PresentationSource.FromVisual (this);
-			if (source != null && source.CompositionTarget != null)
-			{
-				dpiX = source.CompositionTarget.TransformToDevice.M11;
-				dpiY = source.CompositionTarget.TransformToDevice.M22;
-			}
 
 			// 将坐标吸附到物理设备像素，防止抗锯齿导致切片间漏白
 			Func<double, double> snapX = x => Math.Round (x * dpiX) / dpiX;
@@ -121,6 +199,7 @@ namespace System.Windows.Controls
 		private bool IsAllSlicesNull () { for (int i = 0; i < 9; i++) if (_slices [i] != null) return false; return true; }
 		private void UpdateSlices ()
 		{
+			DropStretchedImage ();
 			_bitmapSource = GetBitmapSource (Source);
 			if (_bitmapSource == null || _bitmapSource.PixelWidth == 0 || _bitmapSource.PixelHeight == 0) { ClearSlices (); return; }
 			int w = _bitmapSource.PixelWidth, h = _bitmapSource.PixelHeight;
@@ -154,7 +233,7 @@ namespace System.Windows.Controls
 			if (cropped.CanFreeze) cropped.Freeze ();
 			return cropped;
 		}
-		private void ClearSlices () { _wholeImage = null; for (int i = 0; i < 9; i++) _slices [i] = null; InvalidateVisual (); }
+		private void ClearSlices () { _wholeImage = null; for (int i = 0; i < 9; i++) _slices [i] = null; DropStretchedImage (); InvalidateVisual (); }
 		internal static int ToNonNegativeInt (double v)
 		{
 			if (double.IsNaN (v) || double.IsInfinity (v) || v <= 0) return 0;
@@ -182,7 +261,17 @@ namespace System.Windows.Controls
 			_pendingBitmapImage.DownloadFailed -= OnPendingBitmapDownloadFailed;
 			_pendingBitmapImage = null;
 		}
-		private void OnPendingBitmapDownloadCompleted (object sender, EventArgs e) { UnsubscribePendingBitmap (); if (Dispatcher.CheckAccess ()) UpdateSlices (); else Dispatcher.BeginInvoke (new Action (UpdateSlices)); }
-		private void OnPendingBitmapDownloadFailed (object sender, ExceptionEventArgs e) { UnsubscribePendingBitmap (); if (Dispatcher.CheckAccess ()) UpdateSlices (); else Dispatcher.BeginInvoke (new Action (UpdateSlices)); }
+		private void OnPendingBitmapDownloadCompleted (object sender, EventArgs e)
+		{
+			UnsubscribePendingBitmap ();
+			if (Dispatcher.CheckAccess ()) { UpdateSlices (); OnSourceChanged (EventArgs.Empty); }
+			else Dispatcher.BeginInvoke (new Action (() => { UpdateSlices (); OnSourceChanged (EventArgs.Empty); }));
+		}
+		private void OnPendingBitmapDownloadFailed (object sender, ExceptionEventArgs e)
+		{
+			UnsubscribePendingBitmap ();
+			if (Dispatcher.CheckAccess ()) { UpdateSlices (); OnSourceChanged (EventArgs.Empty); }
+			else Dispatcher.BeginInvoke (new Action (() => { UpdateSlices (); OnSourceChanged (EventArgs.Empty); }));
+		}
 	}
 }

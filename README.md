@@ -116,6 +116,11 @@ measurement rules, state fallback tables, recipes and limitations:
 
 [English guide](docs/hack-components.md) | [简体中文文档](docs/hack-components.zh-CN.md)
 
+`HackImage` can also bake its current surface into one alpha-preserving bitmap — `StretchedImage`,
+lazy, weakly cached and dropped on resize/source change/unload — and raises `SourceChanged` when
+the effective image really changes. Both are described in the
+[HackImage guide](docs/hack-components.md#stretchedimage).
+
 ## Public resource keys
 
 Use the constants on `Microsoft.Windows.Themes.ThemeResourceKeys`; the XAML key is the string

@@ -74,6 +74,8 @@ presentation 命名空间里的其他类型重名；本库的 25 个名称已与
 | `IsSourceShrink` | `bool` | `false` | 位图小于切片总尺寸时，是否退化为整图拉伸；`false` 时不绘制。 |
 | `ScalingMode` | `BitmapScalingMode` | `HighQuality` | 位图缩放质量；像素画可用 `NearestNeighbor`。 |
 | `ThemeDescriptorSource` | `DependencyObject` | `null` | 高级用法：从另一个对象读取 `ThemeImage` 描述符；`HackBorder` 内部使用。 |
+| `StretchedImage` | `BitmapSource`（只读） | `null` | 当前表面按屏幕 DPI 烘焙成一张 `Pbgra32` 位图；懒加载、弱缓存，尺寸/源/DPI 变化和卸载时丢弃。 |
+| `SourceChanged` | `event EventHandler` | - | 有效图像真正变化时触发（见下文）。 |
 
 `HackImage` 没有子节点。它的测量规则很简单：
 
@@ -107,6 +109,39 @@ presentation 命名空间里的其他类型重名；本库的 25 个名称已与
 
 此时必须自己设置 `HackThickness`，数值以位图的像素坐标为准。96 DPI 位图的一个图像像素等于
 一个 DIP；高 DPI 位图则按位图的 `DpiX`/`DpiY` 换算。
+
+### StretchedImage
+
+`StretchedImage` 把控件当前的表面烘焙成一张位图：九片按 `OnRender` 完全相同的几何合成，格式为
+`Pbgra32`（预乘、保留 alpha），尺寸按屏幕 DPI。
+
+```csharp
+// 在 Loaded / SizeChanged 里取，不要每帧取
+BitmapSource surface = hackImage.StretchedImage;
+```
+
+- **懒加载。** 不读就永远不渲染；没人用的 `HackImage` 不会多占一点内存。
+- **勤清理。** 缓存只有一个弱引用；`RenderSize`、`Source`、`HackThickness`、`ScalingMode`
+  变化，DPI 变化，以及 `Unloaded` 时都会丢弃；也可以调用 `InvalidateStretchedImage()` 手动丢弃。
+  调用方持有这张位图时它不会消失；最后一个引用释放后即可被 GC 回收。
+- **代价。** 每像素 4 字节：1600 x 900 约 5.8 MB。不要在循环里或 `OnRender` 里调用，只在尺寸或源
+  变化时取一次。
+- **内容。** 只包含元素自己绘制的东西，不含 `Opacity`、`Effect`、`RenderTransform` 和父级裁剪。
+- **DPI。** `StretchedImage` 用屏幕 DPI（125% → 1.25 倍像素）；`GetStretchedImage(dpi)` 按指定
+  DPI（96、120、144……）烘焙。两者共用同一个单条目缓存，交替请求两个 DPI 会每次都重建。
+- **Alpha。** 格式是 `Pbgra32`，颜色通道是预乘的；需要非预乘 alpha 时用 `FormatConvertedBitmap`
+  转成 `Bgra32`。返回的位图已冻结（Freezable），可以跨线程读取。
+- 元素没有尺寸或没有源时返回 `null`；必须在 UI 线程读取。
+
+### SourceChanged
+
+```csharp
+hackImage.SourceChanged += delegate { surface = hackImage.StretchedImage; };
+```
+
+有效图像真正变化时触发：`Source` 被替换（包括通过 `SetCurrentValue`——过渡动画结束和主题刷新都走
+这条路），以及异步下载的 `BitmapImage` 完成或失败时。改 `HackThickness`、改尺寸、过渡换帧
+（`SetSliceImages`）都不会触发。子类可以重写 `OnSourceChanged`。
 
 ### 切片不合法时的退化
 

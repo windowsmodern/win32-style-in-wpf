@@ -105,6 +105,10 @@ WPF 的 presentation XML 命名空间下，所以在引用本程序集之后可�
 
 [English guide](docs/hack-components.md) | [简体中文文档](docs/hack-components.zh-CN.md)
 
+`HackImage` 还能把当前表面烘焙成一张带 alpha 的位图——`StretchedImage`：懒加载、弱缓存，尺寸/源变化
+或卸载即丢弃；有效图像真正变化时触发 `SourceChanged`。详见
+[HackImage 文档](docs/hack-components.zh-CN.md#stretchedimage)。
+
 ## 公开资源键
 
 资源常量在 `Microsoft.Windows.Themes.ThemeResourceKeys` 中，常量值就是 XAML 资源键。

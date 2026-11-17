@@ -80,6 +80,8 @@ like a Border.*
 | `IsSourceShrink` | `bool` | `false` | If the bitmap is smaller than the slice sum, stretch the whole bitmap instead of drawing nothing. |
 | `ScalingMode` | `BitmapScalingMode` | `HighQuality` | Bitmap scaling filter. Use `NearestNeighbor` for pixel art. |
 | `ThemeDescriptorSource` | `DependencyObject` | `null` | Advanced: read `ThemeImage` descriptors from another object. `HackBorder` uses this internally. |
+| `StretchedImage` | `BitmapSource` (get only) | `null` | The surface baked into one `Pbgra32` bitmap at the screen DPI; lazy, weak cache, dropped on layout/source/DPI change and on unload. |
+| `SourceChanged` | `event EventHandler` | - | Raised when the effective source really changes (see below). |
 
 `HackImage` has no child. Its `MeasureOverride` is deliberately simple:
 
@@ -118,6 +120,47 @@ You can bypass UxTheme and supply your own image:
 Set `HackThickness` yourself in this case. The values are in the bitmap's pixel coordinate system.
 For a 96 DPI bitmap, one image pixel equals one DIP; for a high-DPI bitmap, the element converts
 through the bitmap's `DpiX`/`DpiY`.
+
+### StretchedImage
+
+`StretchedImage` returns the element's current surface as one bitmap: the nine slices composed and
+scaled exactly as `OnRender` draws them, in `Pbgra32` (premultiplied, alpha preserved) at the
+screen DPI.
+
+```csharp
+// in a Loaded / SizeChanged handler, not per frame
+BitmapSource surface = hackImage.StretchedImage;
+```
+
+- **Lazy.** Nothing is rendered until the property is read; a `HackImage` that nobody asks keeps
+  zero extra memory.
+- **Cheap to drop.** The cache is a single weak reference. It is cleared when `RenderSize`,
+  `Source`, `HackThickness` or `ScalingMode` changes, when the DPI changes, and on `Unloaded`;
+  `InvalidateStretchedImage()` clears it by hand. A caller that holds the bitmap keeps it alive;
+  once the last reference goes away the GC can reclaim it.
+- **Cost.** Four bytes per pixel: 1600 x 900 is 5.8 MB. Do not call it in a loop or from
+  `OnRender`; take it when the size or the source changes.
+- **What it contains.** Only what the element paints: no `Opacity`, `Effect`,
+  `RenderTransform` or parent clipping.
+- **DPI.** `StretchedImage` uses the screen DPI (125% -> 1.25x pixels);
+  `GetStretchedImage(dpi)` bakes at an explicit DPI (96, 120, 144, ...). The one-entry cache is
+  shared, so alternating two DPIs rebuilds every time.
+- **Alpha.** The format is `Pbgra32`, so the colour channels are premultiplied. Convert to
+  `Bgra32` with a `FormatConvertedBitmap` when you need straight alpha. The result is frozen, so it
+  can be read from other threads.
+- Returns `null` while the element has no size or no source, and must be read on the UI thread.
+
+### SourceChanged
+
+```csharp
+hackImage.SourceChanged += delegate { surface = hackImage.StretchedImage; };
+```
+
+Raised when the effective image really changes: `Source` is replaced (also through
+`SetCurrentValue`, which is how a `HackImageTransition` ends and how a theme refresh assigns),
+and when an asynchronously downloading `BitmapImage` completes or fails. Changing
+`HackThickness`, resizing, and transition frames (`SetSliceImages`) do not raise it. Subclasses
+can override `OnSourceChanged`.
 
 ### Invalid slices and fallback
 

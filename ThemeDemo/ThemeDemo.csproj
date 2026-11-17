@@ -74,6 +74,7 @@
     <Compile Include="HackButtonDemoSources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelfTest.cs" />
+    <Compile Include="StretchedProbe.cs" />
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
