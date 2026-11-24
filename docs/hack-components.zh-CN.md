@@ -315,6 +315,31 @@ transition.Start();
 
 ![HackButton、HackRepeatButton 与 HackToggleButton](hackbuttons.png)
 
+### 通过 Style 提供图片
+
+五个 `*Source` 属性（以及 `HackToggleButton` 上的五个 `Checked*Source`）都是依赖属性，所以可以
+由 `Style` 提供，隐式样式也生效：
+
+```xml
+<Style TargetType="{x:Type HackButton}">
+  <Setter Property="NormalSource" Value="{DynamicResource NormalImage}" />
+  <Setter Property="HoverSource" Value="{DynamicResource HoverImage}" />
+</Style>
+```
+
+把 `HackButton` 放进别的控件的 `ControlTemplate` 时同样有效：
+
+```xml
+<ControlTemplate TargetType="MenuItem">
+  <Grid>
+    <HackButton Style="{StaticResource TileImageBackground}" />
+  </Grid>
+</ControlTemplate>
+```
+
+控件刻意不给自己赋 `Style`：局部 `Style` 会压过隐式样式，也会压过模板里设置的 `Style`。改用
+`DefaultStyleKey` 覆盖来挡住基类 `Button` / `RepeatButton` / `ToggleButton` 的主题模板。
+
 ## HackToggleButton
 
 `HackToggleButton` 在同样的模型上增加一套勾选态图片：五张基础图，加五张可选的 `Checked*` 图。

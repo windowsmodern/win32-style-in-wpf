@@ -351,6 +351,32 @@ constructor. If your application has an explicit `Style` for `HackButton`, assig
 
 ![HackButton, HackRepeatButton and HackToggleButton](hackbuttons.png)
 
+### Sources through a style
+
+The five `*Source` properties (and the five `Checked*Source` ones on `HackToggleButton`) are
+dependency properties, so a `Style` can supply them — implicit styles included:
+
+```xml
+<Style TargetType="{x:Type HackButton}">
+  <Setter Property="NormalSource" Value="{DynamicResource NormalImage}" />
+  <Setter Property="HoverSource" Value="{DynamicResource HoverImage}" />
+</Style>
+```
+
+It also works when the `HackButton` is created inside another control's `ControlTemplate`:
+
+```xml
+<ControlTemplate TargetType="MenuItem">
+  <Grid>
+    <HackButton Style="{StaticResource TileImageBackground}" />
+  </Grid>
+</ControlTemplate>
+```
+
+The control deliberately assigns no `Style` of its own: a local `Style` would outrank both an
+implicit style and the one a template sets.  `DefaultStyleKey` is overridden instead, so the base
+`Button` / `RepeatButton` / `ToggleButton` theme template never applies.
+
 ## HackToggleButton
 
 `HackToggleButton` adds a checked image set to the same model. It has the five base sources above

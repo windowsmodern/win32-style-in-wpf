@@ -75,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelfTest.cs" />
     <Compile Include="StretchedProbe.cs" />
+    <Compile Include="StyleProbe.cs" />
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>

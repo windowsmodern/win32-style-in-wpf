@@ -16,7 +16,8 @@ namespace ThemeDemo
             bool hackButtonProbe = HackButtonProbe.IsRequested(e.Args);
             bool borderProbe = BorderProbe.IsRequested(e.Args);
             bool stretchedProbe = StretchedProbe.IsRequested(e.Args);
-            ShutdownMode = (selfTest || hoverProbe || layoutProbe || hackButtonProbe || borderProbe || stretchedProbe) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
+            bool styleProbe = StyleProbe.IsRequested(e.Args);
+            ShutdownMode = (selfTest || hoverProbe || layoutProbe || hackButtonProbe || borderProbe || stretchedProbe || styleProbe) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
 
             bool transition = HasSwitch(e.Args, "--transition");
 
@@ -63,6 +64,12 @@ namespace ThemeDemo
             if (stretchedProbe)
             {
                 Environment.Exit(StretchedProbe.Run(transition));
+                return;
+            }
+
+            if (styleProbe)
+            {
+                Environment.Exit(StyleProbe.Run(transition));
                 return;
             }
 

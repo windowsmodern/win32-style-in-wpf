@@ -18,8 +18,9 @@ namespace System.Windows.Controls
 		static HackToggleButton () { DefaultStyleKeyProperty.OverrideMetadata (typeof (HackToggleButton), new FrameworkPropertyMetadata (typeof (HackToggleButton))); }
 		public HackToggleButton ()
 		{
-			// 阻断隐式 {x:Type ToggleButton} 样式，避免与主题模板叠加。
-			Style = new Style (typeof (HackToggleButton));
+			// 不要在这里给 Style 赋值：局部 Style 会压过隐式样式，也会压过 ControlTemplate 里
+			// 设置的 Style（*Source 属性就因此无法由 Style 提供）。
+			// 基础按钮的主题样式由 DefaultStyleKey 覆盖挡住，不需要局部 Style。
 			_chrome = new HackButtonChrome (this, HackThickness);
 			AddVisualChild (_chrome.Art);
 			AddVisualChild (_chrome.Content);
