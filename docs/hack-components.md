@@ -339,9 +339,12 @@ hit-tested child can become `IsPressed`, so without help the outer layer keeps i
 </HackButton>
 ```
 
-The child stays the input owner and raises `Click`; the parent only reads `IsMouseOver`,
-`IsPressed` and `IsKeyboardFocused` (disabled still wins, then pressed, hover, focus). The property
-exists on `HackButton`, `HackRepeatButton` and `HackToggleButton`.
+The link works in both directions: the outer button picks its images from the child's
+`IsMouseOver` / `IsPressed` / `IsKeyboardFocused`, and the child picks its images from the outer
+button's state as well. Whichever layer receives the pointer, both show hover/press, and a disabled
+outer layer disables both. The child still owns the input and raises `Click`; the outer only reads
+it. Priority stays disabled > pressed > hover > focus. The property exists on `HackButton`,
+`HackRepeatButton` and `HackToggleButton`.
 
 
 ### State selection

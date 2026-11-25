@@ -13,7 +13,7 @@ namespace System.Windows.Controls
 	/// 本控件不依赖主题字典，也不参与主题样式；背景和状态全部由下面五个属性决定。
 	/// 内容布局与普通 Button 相同：内容 + Padding，且对齐方式取 HorizontalContentAlignment/VerticalContentAlignment。
 	/// </summary>
-	public class HackButton: Button
+	public class HackButton: Button, IHackButtonStateTarget
 	{
 		private readonly HackButtonChrome _chrome;
 		private ButtonBase _contentStateSource;
@@ -38,7 +38,12 @@ namespace System.Windows.Controls
 		protected override Size MeasureOverride (Size availableSize) { return _chrome.Measure (availableSize, Padding); }
 		protected override Size ArrangeOverride (Size finalSize) { return _chrome.Arrange (finalSize, Padding); }
 		protected override void OnIsPressedChanged (DependencyPropertyChangedEventArgs e) { base.OnIsPressedChanged (e); UpdateArt (); }
-		internal void UpdateArt () { if (_chrome != null) _chrome.SetSource (PickSource (), TransitionDuration, TransitionEasing); }
+		internal void UpdateArt ()
+		{
+			if (_chrome != null) _chrome.SetSource (PickSource (), TransitionDuration, TransitionEasing);
+			HackButtonContentState.RefreshLinkedContent (_contentStateSource);
+		}
+		void IHackButtonStateTarget.RefreshFromOwner () { UpdateArt (); }
 		protected override void OnContentChanged (object oldContent, object newContent)
 		{
 			base.OnContentChanged (oldContent, newContent);
@@ -50,12 +55,16 @@ namespace System.Windows.Controls
 			ButtonBase source = TrackContentState ? Content as ButtonBase : null;
 			if (ReferenceEquals (source, _contentStateSource)) return;
 			if (_contentStateSource != null && _contentStateHandler != null)
+			{
 				HackButtonContentState.Detach (_contentStateSource, _contentStateHandler);
+				HackButtonContentState.Unlink (_contentStateSource);
+			}
 			_contentStateSource = source;
 			if (source != null)
 			{
 				if (_contentStateHandler == null) _contentStateHandler = delegate { UpdateArt (); };
 				HackButtonContentState.Attach (source, _contentStateHandler);
+				HackButtonContentState.LinkToOwner (source, this);
 			}
 			UpdateArt ();
 		}
@@ -66,10 +75,11 @@ namespace System.Windows.Controls
 		/// <summary>按当前交互状态挑选背景图。子类可改写（如 ToggleButton 追加 Checked 状态）。</summary>
 		protected virtual ImageSource PickSource ()
 		{
-			bool pressed = IsPressed || ContentPressed;
-			bool hover = IsMouseOver || ContentHover;
-			bool focused = IsKeyboardFocused || ContentFocused;
-			if (!IsEnabled) return DisabledSource ?? NormalSource;
+			bool pressed = IsPressed || ContentPressed || HackButtonContentState.OwnerPressed (this);
+			bool hover = IsMouseOver || ContentHover || HackButtonContentState.OwnerHover (this);
+			bool focused = IsKeyboardFocused || ContentFocused || HackButtonContentState.OwnerFocused (this);
+			bool disabled = !IsEnabled || HackButtonContentState.OwnerDisabled (this);
+			if (disabled) return DisabledSource ?? NormalSource;
 			if (pressed) return ActiveSource ?? HoverSource ?? NormalSource;
 			if (hover) return HoverSource ?? NormalSource;
 			if (focused) return FocusSource ?? HoverSource ?? NormalSource;

@@ -11,8 +11,9 @@ using System.Windows.Media.Imaging;
 namespace ThemeDemo
 {
     /// <summary>
-    /// Verifies TrackContentState: a button that wraps another button shows its own hover/press
-    /// images when the child is hovered/pressed, while the child keeps the input and the Click.
+    /// Verifies TrackContentState: the outer button follows the content button's hover/press state
+    /// and the content button follows the outer button's state (both directions), without the outer
+    /// stealing input from the content.
     /// </summary>
     internal static class VisualStateProbe
     {
@@ -69,12 +70,13 @@ namespace ThemeDemo
                 .GetValue (chrome, null)).Source;
         }
 
-        private static string Name (ImageSource source, ImageSource normal, ImageSource hover, ImageSource active)
+        private static string Name (ImageSource source, ImageSource normal, ImageSource hover, ImageSource active, ImageSource disabled)
         {
             if (source == null) return "null";
             if (ReferenceEquals (source, normal)) return "normal";
             if (ReferenceEquals (source, hover)) return "hover";
             if (ReferenceEquals (source, active)) return "active";
+            if (ReferenceEquals (source, disabled)) return "disabled";
             return "other";
         }
 
@@ -85,7 +87,7 @@ namespace ThemeDemo
             button.SetValue (key, value);
         }
 
-        private static void Configure (FrameworkElement b, ImageSource normal, ImageSource hover, ImageSource active)
+        private static void Configure (FrameworkElement b, ImageSource normal, ImageSource hover, ImageSource active, ImageSource disabled)
         {
             b.Width = 22;
             b.Height = 22;
@@ -93,6 +95,7 @@ namespace ThemeDemo
             type.GetProperty ("NormalSource").SetValue (b, normal, null);
             type.GetProperty ("HoverSource").SetValue (b, hover, null);
             type.GetProperty ("ActiveSource").SetValue (b, active, null);
+            type.GetProperty ("DisabledSource").SetValue (b, disabled, null);
         }
 
         public static int Run (bool transition)
@@ -101,81 +104,102 @@ namespace ThemeDemo
             Log.Clear ();
             Say ("TrackContentState  (theme: {0})", transition ? "transition" : "plain");
 
-            ImageSource normal = Art (Colors.SteelBlue), hover = Art (Colors.Orange), active = Art (Colors.SeaGreen);
-            ImageSource fgNormal = Art (Colors.White), fgHover = Art (Colors.Gold), fgActive = Art (Colors.DarkGreen);
+            ImageSource normal = Art (Colors.SteelBlue), hover = Art (Colors.Orange), active = Art (Colors.SeaGreen), disabled = Art (Colors.Gray);
+            ImageSource fgNormal = Art (Colors.White), fgHover = Art (Colors.Gold), fgActive = Art (Colors.DarkGreen), fgDisabled = Art (Colors.DimGray);
 
-            // Outer background button wrapping the foreground button, exactly like the menu item.
             var outer = new HackButton ();
             var inner = new HackButton ();
-            Configure (outer, normal, hover, active);
-            Configure (inner, fgNormal, fgHover, fgActive);
+            Configure (outer, normal, hover, active, disabled);
+            Configure (inner, fgNormal, fgHover, fgActive, fgDisabled);
             outer.Content = inner;
 
             var panel = new StackPanel ();
             panel.Children.Add (outer);
-            var window = new Window { Width = 120, Height = 100, Content = panel };
+            var window = new Window { Width = 140, Height = 120, Content = panel };
             window.Show ();
             window.UpdateLayout ();
 
             Check (outer.TrackContentState == false, "TrackContentState defaults to false", string.Empty);
+
+            // child -> parent
             SetPressed (inner, true);
             Check (inner.IsPressed, "child button is pressed", "inner.IsPressed=" + inner.IsPressed);
             Check (Current (outer) == normal, "without the flag the parent keeps its normal image",
-                Name (Current (outer), normal, hover, active));
+                Name (Current (outer), normal, hover, active, disabled));
 
             outer.TrackContentState = true;
-            Check (Current (outer) == active, "tracking mirrors the child's pressed state",
-                Name (Current (outer), normal, hover, active));
+            Check (Current (outer) == active, "parent follows the child's pressed state",
+                Name (Current (outer), normal, hover, active, disabled));
             Check (!outer.IsPressed, "parent itself is not pressed", "outer.IsPressed=" + outer.IsPressed);
             Check (Current (inner) == fgActive, "child keeps its own pressed image",
-                Name (Current (inner), fgNormal, fgHover, fgActive));
+                Name (Current (inner), fgNormal, fgHover, fgActive, fgDisabled));
 
+            // parent -> child (the part that used to be missing)
             SetPressed (inner, false);
-            Check (Current (outer) == normal, "releasing the child restores the parent image",
-                Name (Current (outer), normal, hover, active));
+            Check (Current (outer) == normal && Current (inner) == fgNormal, "both return to normal",
+                Name (Current (outer), normal, hover, active, disabled) + " / " + Name (Current (inner), fgNormal, fgHover, fgActive, fgDisabled));
 
-            // Flag set before the content arrives: OnContentChanged has to attach the tracking.
+            SetPressed (outer, true);
+            Check (Current (outer) == active, "parent shows its own pressed image",
+                Name (Current (outer), normal, hover, active, disabled));
+            Check (Current (inner) == fgActive, "child follows the parent's pressed state",
+                Name (Current (inner), fgNormal, fgHover, fgActive, fgDisabled));
+            SetPressed (outer, false);
+            Check (Current (inner) == fgNormal, "child returns to normal with the parent",
+                Name (Current (inner), fgNormal, fgHover, fgActive, fgDisabled));
+
+            // disabled travels down as well
+            outer.IsEnabled = false;
+            Check (Current (inner) == fgDisabled, "child follows the parent's disabled state",
+                Name (Current (inner), fgNormal, fgHover, fgActive, fgDisabled));
+            outer.IsEnabled = true;
+
+            // child set after the flag is linked both ways
             var lateOuter = new HackButton ();
-            Configure (lateOuter, normal, hover, active);
+            Configure (lateOuter, normal, hover, active, disabled);
             lateOuter.TrackContentState = true;
             var lateInner = new HackButton ();
-            Configure (lateInner, fgNormal, fgHover, fgActive);
+            Configure (lateInner, fgNormal, fgHover, fgActive, fgDisabled);
             lateOuter.Content = lateInner;
             panel.Children.Add (lateOuter);
             window.UpdateLayout ();
             SetPressed (lateInner, true);
-            Check (Current (lateOuter) == active, "content set after the flag is tracked too",
-                Name (Current (lateOuter), normal, hover, active));
+            Check (Current (lateOuter) == active, "content set after the flag is tracked", string.Empty);
+            SetPressed (lateInner, false);
+            SetPressed (lateOuter, true);
+            Check (Current (lateInner) == fgActive, "late content follows the parent too", string.Empty);
+            SetPressed (lateOuter, false);
 
-            // The other two button classes share the same property.
+            // the other two button classes behave the same
             var repeatOuter = new HackRepeatButton ();
             var repeatInner = new HackRepeatButton ();
-            Configure (repeatOuter, normal, hover, active);
-            Configure (repeatInner, fgNormal, fgHover, fgActive);
+            Configure (repeatOuter, normal, hover, active, disabled);
+            Configure (repeatInner, fgNormal, fgHover, fgActive, fgDisabled);
             repeatOuter.Content = repeatInner;
             repeatOuter.TrackContentState = true;
             panel.Children.Add (repeatOuter);
             window.UpdateLayout ();
             SetPressed (repeatInner, true);
-            Check (Current (repeatOuter) == active, "HackRepeatButton tracks its content",
-                Name (Current (repeatOuter), normal, hover, active));
+            Check (Current (repeatOuter) == active, "HackRepeatButton follows its content", string.Empty);
+            SetPressed (repeatInner, false);
+            SetPressed (repeatOuter, true);
+            Check (Current (repeatInner) == fgActive, "HackRepeatButton content follows it", string.Empty);
+            SetPressed (repeatOuter, false);
 
             var toggleOuter = new HackToggleButton ();
             var toggleInner = new HackToggleButton ();
-            Configure (toggleOuter, normal, hover, active);
-            Configure (toggleInner, fgNormal, fgHover, fgActive);
+            Configure (toggleOuter, normal, hover, active, disabled);
+            Configure (toggleInner, fgNormal, fgHover, fgActive, fgDisabled);
             toggleOuter.Content = toggleInner;
             toggleOuter.TrackContentState = true;
             panel.Children.Add (toggleOuter);
             window.UpdateLayout ();
             SetPressed (toggleInner, true);
-            Check (Current (toggleOuter) == active, "HackToggleButton tracks its content",
-                Name (Current (toggleOuter), normal, hover, active));
-
-            // Disabled still outranks the child state.
-            outer.IsEnabled = false;
-            Check (Current (outer) == normal, "disabled wins over the child state (no disabled image set)",
-                Name (Current (outer), normal, hover, active));
+            Check (Current (toggleOuter) == active, "HackToggleButton follows its content", string.Empty);
+            SetPressed (toggleInner, false);
+            SetPressed (toggleOuter, true);
+            Check (Current (toggleInner) == fgActive, "HackToggleButton content follows it", string.Empty);
+            SetPressed (toggleOuter, false);
 
             Say (_failures == 0 ? "all content-state checks passed" : _failures + " check(s) failed");
             try

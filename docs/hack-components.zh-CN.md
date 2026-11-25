@@ -303,8 +303,10 @@ transition.Start();
 </HackButton>
 ```
 
-子按钮仍然是输入所有者和 `Click` 的来源；外层只读取 `IsMouseOver`、`IsPressed`、`IsKeyboardFocused`
-（禁用仍然优先，然后按下、悬停、焦点）。三个按钮控件都提供该属性。
+这个关联是双向的：外层按子按钮的 `IsMouseOver` / `IsPressed` / `IsKeyboardFocused` 选图，子按钮
+也按外层的状态选图。无论指针落在哪一层，两层都会同时显示悬停/按下；外层禁用时两层的图也一起禁用。
+子按钮仍然是输入所有者和 `Click` 的来源，外层只读取状态。优先级仍是禁用 > 按下 > 悬停 > 焦点。
+三个按钮控件都提供该属性。
 
 
 ### 状态选择

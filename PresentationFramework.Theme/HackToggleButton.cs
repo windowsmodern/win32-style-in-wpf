@@ -12,7 +12,7 @@ namespace System.Windows.Controls
 	/// 只有背景改成五张九宫格图。勾选后（且未悬停/按下/禁用）用 <see cref="ActiveSource"/> 作为静止态，
 	/// 未勾选用 <see cref="NormalSource"/>。不依赖主题字典。
 	/// </summary>
-	public class HackToggleButton: ToggleButton
+	public class HackToggleButton: ToggleButton, IHackButtonStateTarget
 	{
 		private readonly HackButtonChrome _chrome;
 		private ButtonBase _contentStateSource;
@@ -40,7 +40,12 @@ namespace System.Windows.Controls
 		protected override Size MeasureOverride (Size availableSize) { return _chrome.Measure (availableSize, Padding); }
 		protected override Size ArrangeOverride (Size finalSize) { return _chrome.Arrange (finalSize, Padding); }
 		protected override void OnIsPressedChanged (DependencyPropertyChangedEventArgs e) { base.OnIsPressedChanged (e); UpdateArt (); }
-		internal void UpdateArt () { if (_chrome != null) _chrome.SetSource (PickSource (), TransitionDuration, TransitionEasing); }
+		internal void UpdateArt ()
+		{
+			if (_chrome != null) _chrome.SetSource (PickSource (), TransitionDuration, TransitionEasing);
+			HackButtonContentState.RefreshLinkedContent (_contentStateSource);
+		}
+		void IHackButtonStateTarget.RefreshFromOwner () { UpdateArt (); }
 		protected override void OnContentChanged (object oldContent, object newContent)
 		{
 			base.OnContentChanged (oldContent, newContent);
@@ -52,12 +57,16 @@ namespace System.Windows.Controls
 			ButtonBase source = TrackContentState ? Content as ButtonBase : null;
 			if (ReferenceEquals (source, _contentStateSource)) return;
 			if (_contentStateSource != null && _contentStateHandler != null)
+			{
 				HackButtonContentState.Detach (_contentStateSource, _contentStateHandler);
+				HackButtonContentState.Unlink (_contentStateSource);
+			}
 			_contentStateSource = source;
 			if (source != null)
 			{
 				if (_contentStateHandler == null) _contentStateHandler = delegate { UpdateArt (); };
 				HackButtonContentState.Attach (source, _contentStateHandler);
+				HackButtonContentState.LinkToOwner (source, this);
 			}
 			UpdateArt ();
 		}
@@ -77,14 +86,15 @@ namespace System.Windows.Controls
 		protected virtual ImageSource PickSource ()
 		{
 			bool on = IsChecked == true;
-			bool pressed = IsPressed || ContentPressed;
-			bool hover = IsMouseOver || ContentHover;
-			bool focused = IsKeyboardFocused || ContentFocused;
+			bool pressed = IsPressed || ContentPressed || HackButtonContentState.OwnerPressed (this);
+			bool hover = IsMouseOver || ContentHover || HackButtonContentState.OwnerHover (this);
+			bool focused = IsKeyboardFocused || ContentFocused || HackButtonContentState.OwnerFocused (this);
+			bool disabled = !IsEnabled || HackButtonContentState.OwnerDisabled (this);
 
 			if (on && HasCheckedArt)
 			{
 				ImageSource baseline = CheckedNormalSource ?? ActiveSource ?? NormalSource;
-				if (!IsEnabled) return CheckedDisabledSource ?? baseline;
+				if (disabled) return CheckedDisabledSource ?? baseline;
 				if (pressed) return CheckedActiveSource ?? baseline;
 				if (hover) return CheckedHoverSource ?? baseline;
 				if (focused) return CheckedFocusSource ?? baseline;
@@ -92,7 +102,7 @@ namespace System.Windows.Controls
 			}
 
 			ImageSource resting = on ? (ActiveSource ?? NormalSource) : NormalSource;
-			if (!IsEnabled) return DisabledSource ?? resting;
+			if (disabled) return DisabledSource ?? resting;
 			if (pressed) return ActiveSource ?? HoverSource ?? resting;
 			if (hover) return HoverSource ?? resting;
 			if (focused) return FocusSource ?? HoverSource ?? resting;
