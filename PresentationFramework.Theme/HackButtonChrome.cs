@@ -87,7 +87,9 @@ namespace System.Windows.Controls
 		/// </summary>
 		internal void SetSource (ImageSource source, Duration duration, IEasingFunction easing)
 		{
-			bool animate = duration.HasTimeSpan && duration.TimeSpan > TimeSpan.Zero && _art.Source != null;
+			// 正在跑的过渡也算"有图"：从 null 淡入时 _art.Source 一直是 null，但画面上有中间帧。
+			bool animate = duration.HasTimeSpan && duration.TimeSpan > TimeSpan.Zero
+				&& (_art.Source != null || HackImageTransitions.GetIsRunning (_art));
 			if (!animate)
 			{
 				// 过渡可能仍在推进：从"没有图"淡入时 _art.Source 一直是 null，但切片已是中间帧。

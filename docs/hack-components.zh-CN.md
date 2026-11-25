@@ -328,7 +328,10 @@ transition.Start();
 
 某个状态本身没有图时（例如 `NormalSource` 为 `null`、只设了 `HoverSource`），进入该状态会直接
 赋值（没有可淡入的起点），离开时则把这张图淡出到透明。过渡进行中再切换状态会取消旧过渡，而不是
-让它跑完，所以快速划进划出不会在界面上留下残影。
+让它跑完，所以快速划进划出不会在界面上留下残影。`null` 一侧按"与另一侧同尺寸、同切片的全透明图"处理，
+所以到 `null` 或从 `null` 的淡入淡出是真正的 alpha 渐变（中途可见），不是突然出现/消失。
+在淡入淡出途中在"无图"和图片之间切换时，
+新过渡会从当前屏幕上的那一帧开始，不会突跳，也不会被旧目标覆盖。
 
 ```xml
 <pt:HackButton NormalSource="{StaticResource ToolbarNormal}" HoverSource="{StaticResource ToolbarHot}" ActiveSource="{StaticResource ToolbarPressed}" DisabledSource="{StaticResource ToolbarDisabled}" HackThickness="5" TransitionDuration="0:0:0.15" Padding="10,4" Content="确定" />

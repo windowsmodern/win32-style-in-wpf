@@ -132,6 +132,22 @@ namespace ThemeDemo
             return visible;
         }
 
+        /// <summary>Pixels that are visible but not fully opaque (the cross-fade itself).</summary>
+        private static int PartialPixels (BitmapSource bitmap)
+        {
+            if (bitmap == null)
+                return -1;
+            var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4];
+            bitmap.CopyPixels (pixels, bitmap.PixelWidth * 4, 0);
+            int count = 0;
+            for (int i = 3; i < pixels.Length; i += 4)
+            {
+                if (pixels [i] > 0 && pixels [i] < 255)
+                    count++;
+            }
+            return count;
+        }
+
         public static int Run (bool transition)
         {
             _failures = 0;
@@ -185,6 +201,67 @@ namespace ThemeDemo
                 art.Source == null ? "null" : "set");
             residual = VisibleArtPixels (button);
             Check (residual == 0, "rapid flicks: no pixels left behind", residual.ToString ());
+
+            // null <-> image, interrupted: leaving during a fade-in must start a fade-out, not a snap.
+            SetState (button, button.ActiveSource, duration);
+            Pump (window, 20);
+            SetState (button, null, duration);
+            Pump (window, 60);
+            Check (HackImageTransitions.GetIsRunning (art), "fade-out is running before the re-entry", string.Empty);
+            SetState (button, button.ActiveSource, duration);
+            Pump (window, 60);
+            Check (HackImageTransitions.GetIsRunning (art), "re-entry restarts a fade from the interrupted frame", string.Empty);
+            SetState (button, null, duration);
+            Check (HackImageTransitions.GetIsRunning (art), "leaving during a fade-in starts a fade-out", string.Empty);
+            Pump (window, 600);
+            Check (art.Source == null && !HackImageTransitions.GetIsRunning (art), "interrupted null<->image sequence ends empty",
+                art.Source == null ? "null" : "set");
+            int rapidResidual = VisibleArtPixels (button);
+            Check (rapidResidual == 0, "interrupted null<->image sequence leaves no pixels", rapidResidual.ToString ());
+
+            // Switching the target while a fade is running must restart from the current frame,
+            // otherwise the old target wins and the image looks stuck.
+            var switchHost = new HackImage { Width = 40, Height = 40 };
+            var switchWindow = new Window { Width = 140, Height = 120, Content = switchHost };
+            switchWindow.Show ();
+            Pump (switchWindow, 100);
+
+            BitmapSource a = Art (), b = Art (), c = Art (), d = Art ();
+            HackImageTransitions.SetDuration (switchHost, new Duration (TimeSpan.FromMilliseconds (250)));
+            switchHost.Source = a;
+            HackImageTransitions.SetTo (switchHost, b);
+            Pump (switchWindow, 60);
+            HackImageTransitions.SetTo (switchHost, c);
+            Pump (switchWindow, 600);
+            Check (ReferenceEquals (switchHost.Source, c), "switching the target mid-fade ends on the latest image",
+                switchHost.Source == null ? "null" : (ReferenceEquals (switchHost.Source, b) ? "old target" : "other"));
+
+            // A repeated SetTo(null) must not restart the fade-out (it would extend it).
+            HackImageTransitions.SetDuration (switchHost, new Duration (TimeSpan.FromMilliseconds (400)));
+            switchHost.Source = d;
+            HackImageTransitions.SetTo (switchHost, null);
+            Pump (switchWindow, 100);
+            HackImageTransitions.SetTo (switchHost, null);
+            Pump (switchWindow, 350);
+            Check (switchHost.Source == null, "a repeated fade-out is not restarted",
+                switchHost.Source == null ? "null" : "still showing an image");
+            // A null side must behave like a fully transparent image of the other side: the fade
+            // itself has to be visible (partial alpha), not an abrupt appearance/disappearance.
+            HackImageTransitions.SetDuration (switchHost, new Duration (TimeSpan.FromMilliseconds (400)));
+            switchHost.Source = null;
+            HackImageTransitions.SetTo (switchHost, a);
+            Pump (switchWindow, 150);
+            int fadeIn = PartialPixels (switchHost.StretchedImage);
+            Check (fadeIn > 0, "null -> image is visible mid-fade", "partial pixels=" + fadeIn);
+            Pump (switchWindow, 500);
+
+            HackImageTransitions.SetTo (switchHost, null);
+            Pump (switchWindow, 150);
+            int fadeOut = PartialPixels (switchHost.StretchedImage);
+            Check (fadeOut > 0, "image -> null is visible mid-fade", "partial pixels=" + fadeOut);
+            Pump (switchWindow, 500);
+
+            switchWindow.Close ();
 
             Say (_failures == 0 ? "all null-transition checks passed" : _failures + " check(s) failed");
             try

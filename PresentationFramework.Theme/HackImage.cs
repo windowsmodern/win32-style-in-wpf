@@ -84,7 +84,7 @@ namespace System.Windows.Controls
 				throw new InvalidOperationException ("StretchedImage must be read on the UI thread.");
 			double width = RenderSize.Width, height = RenderSize.Height;
 			if (width <= 0 || height <= 0) return null;
-			if (_wholeImage == null && (_bitmapSource == null || IsAllSlicesNull ())) return null;
+			if (_wholeImage == null && IsAllSlicesNull ()) return null;
 			int pixelWidth = Math.Max (1, (int)Math.Round (width * dpiX / 96.0));
 			int pixelHeight = Math.Max (1, (int)Math.Round (height * dpiY / 96.0));
 			var cached = _stretchedImage == null ? null : _stretchedImage.Target as BitmapSource;
@@ -159,10 +159,12 @@ namespace System.Windows.Controls
 				dc.DrawImage (_wholeImage, new Rect (0, 0, targetW, targetH));
 				return;
 			}
-			if (_bitmapSource == null || IsAllSlicesNull ()) return;
+			if (IsAllSlicesNull ()) return;
 
-			double dpiScaleX = _bitmapSource.Width / _bitmapSource.PixelWidth;
-			double dpiScaleY = _bitmapSource.Height / _bitmapSource.PixelHeight;
+			// Source 为 null 时切片仍可能来自过渡（SetSliceImages），照常画出来；
+			// 过渡帧是 96 DPI 的 WriteableBitmap，1 图像像素 = 1 DIP。
+			double dpiScaleX = _bitmapSource != null ? _bitmapSource.Width / _bitmapSource.PixelWidth : 1.0;
+			double dpiScaleY = _bitmapSource != null ? _bitmapSource.Height / _bitmapSource.PixelHeight : 1.0;
 			double l = HackThickness.Left * dpiScaleX, t = HackThickness.Top * dpiScaleY;
 			double r = HackThickness.Right * dpiScaleX, b = HackThickness.Bottom * dpiScaleY;
 

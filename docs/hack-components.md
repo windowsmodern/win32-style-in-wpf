@@ -370,7 +370,11 @@ When a state has no image of its own — for example `NormalSource` is `null` an
 `HoverSource` is set — entering that state assigns the image directly (there is nothing to
 cross-fade from) and leaving it fades the image out to nothing. Interrupting a fade with a new
 state cancels the old transition instead of letting it finish, so a fast in/out cannot leave a
-stale image on screen.
+stale image on screen. A `null` side is treated as a fully transparent image of the same size and
+slices as the other side, so a fade to or from `null` is a real alpha ramp (visible mid-way), not
+an abrupt appearance. Switching between "no image" and an image while a fade is running starts
+the new fade from the frame that is currently on screen (no snap, and the old target can no longer
+win).
 
 ```xml
 <pt:HackButton NormalSource="{StaticResource ToolbarNormal}" HoverSource="{StaticResource ToolbarHot}" ActiveSource="{StaticResource ToolbarPressed}" DisabledSource="{StaticResource ToolbarDisabled}" HackThickness="5" TransitionDuration="0:0:0.15" Padding="10,4" Content="OK" />

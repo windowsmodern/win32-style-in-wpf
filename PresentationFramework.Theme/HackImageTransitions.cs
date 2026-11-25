@@ -22,8 +22,13 @@ namespace System.Windows.Controls
 			// 但元素上可能还留着上一张图（例如 Normal 为 null、刚按 Hover 直接赋值过一次）。
 			// 这种情况下必须手动启动一次"淡出到透明"，否则图会残留在控件上。
 			bool alreadyNull = d.GetValue (ToProperty) == null;
+			if (value == null && alreadyNull)
+			{
+				// 默认值不会触发属性变更回调：只有还没在淡出时才启动一次。
+				if (!GetIsRunning (d)) Begin (d, null);
+				return;
+			}
 			d.SetValue (ToProperty, value);
-			if (value == null && alreadyNull) Begin (d, null);
 		}
 		public static Duration GetDuration (DependencyObject d) { return (Duration)d.GetValue (DurationProperty); }
 		public static void SetDuration (DependencyObject d, Duration value) { d.SetValue (DurationProperty, value); }
@@ -40,8 +45,6 @@ namespace System.Windows.Controls
 			if (img == null) return;
 			BitmapSource midFrame = null;
 			var old = d.GetValue (TransitionProperty) as HackImageTransition;
-			// 已经朝同一个目标在走（例如连续两次 SetTo(null) 的淡出），不要重启动画。
-			if (old != null && GetIsRunning (img) && ReferenceEquals (GetTo (img), newValue)) return;
 			if (old != null)
 			{
 				midFrame = old.GetCurrentFrame ();
