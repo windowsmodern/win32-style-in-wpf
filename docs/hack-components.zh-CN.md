@@ -291,6 +291,7 @@ transition.Start();
 | `TransitionDuration` | `Duration` | `0` | 状态交叉淡入时长；0 表示立即切换。 |
 | `TransitionEasing` | `IEasingFunction` | `null` | 状态切换缓动。 |
 | `TrackContentState` | `bool` | `false` | 跟踪作为 `Content` 的子按钮的悬停/按下/焦点状态；输入和 `Click` 仍由子按钮处理。 |
+| `TrackOwnerState` | `bool` | `false` | 按 TemplatedParent（没有则按 Parent）的悬停/按下/焦点/禁用状态选图，并把 `IsHitTestVisible` 强制为 false，鼠标事件全部留给外层控件。 |
 
 ### 跟踪子元素状态
 
@@ -308,6 +309,29 @@ transition.Start();
 子按钮仍然是输入所有者和 `Click` 的来源，外层只读取状态。优先级仍是禁用 > 按下 > 悬停 > 焦点。
 三个按钮控件都提供该属性。
 
+
+
+### 由外层元素驱动图层
+
+当按钮外层元素（例如 `MenuItem`）应当接收输入时，设置 `TrackOwnerState="True"`：控件会把自己的
+`IsHitTestVisible` 强制为 `false`（强制值覆盖整个子树，嵌套的第二层也不参与命中）：
+
+```xml
+<ControlTemplate TargetType="{x:Type MenuItem}">
+  <Grid Background="Transparent">
+    <HackButton x:Name="PART_Background" TrackOwnerState="True"
+                Style="{DynamicResource ...Background}">
+      <HackButton x:Name="PART_Foreground" TrackOwnerState="True"
+                  Style="{DynamicResource ...Foreground}" />
+    </HackButton>
+  </Grid>
+</ControlTemplate>
+```
+
+`MenuItem` 接收所有鼠标事件（点击、悬停、展开子菜单），两层按钮只按它的状态画图。状态来源是
+`TemplatedParent`（没有则退回 `Parent`）。`IsMouseOver`、`IsKeyboardFocusWithin`、`IsEnabled`
+直接读取；来源是 `ButtonBase` 时用它的 `IsPressed`，否则用来源的 PreviewMouseDown + 窗口的
+MouseUp 跟踪按下。
 
 ### 状态选择
 

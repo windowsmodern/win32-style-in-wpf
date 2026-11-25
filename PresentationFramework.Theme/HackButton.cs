@@ -17,8 +17,14 @@ namespace System.Windows.Controls
 	{
 		private readonly HackButtonChrome _chrome;
 		private ButtonBase _contentStateSource;
+		private UIElement _ownerStateSource;
 		private EventHandler _contentStateHandler;
-		static HackButton () { DefaultStyleKeyProperty.OverrideMetadata (typeof (HackButton), new FrameworkPropertyMetadata (typeof (HackButton))); }
+		static HackButton ()
+		{
+			DefaultStyleKeyProperty.OverrideMetadata (typeof (HackButton), new FrameworkPropertyMetadata (typeof (HackButton)));
+			// TrackOwnerState 打开时强制不参与命中，事件交给 TemplatedParent / Parent
+			IsHitTestVisibleProperty.OverrideMetadata (typeof (HackButton), new FrameworkPropertyMetadata (true, null, CoerceIsHitTestVisible));
+		}
 		public HackButton ()
 		{
 			// 不要在这里给 Style 赋值：局部 Style 会压过隐式样式，也会压过 ControlTemplate 里
@@ -31,6 +37,8 @@ namespace System.Windows.Controls
 			AddLogicalChild (_chrome.Content);
 			HackButtonChrome.WatchState (this, delegate { UpdateArt (); });
 			IsEnabledChanged += delegate { UpdateArt (); };
+			Loaded += delegate { RefreshOwnerStateTracking (); };
+			Unloaded += delegate { _ownerStateSource = null; HackButtonStateSource.Attach (this, null, UpdateArt); };
 			UpdateArt ();
 		}
 		protected override int VisualChildrenCount { get { return _chrome.VisualChildrenCount; } }
@@ -44,6 +52,11 @@ namespace System.Windows.Controls
 			HackButtonContentState.RefreshLinkedContent (_contentStateSource);
 		}
 		void IHackButtonStateTarget.RefreshFromOwner () { UpdateArt (); }
+		protected override void OnVisualParentChanged (DependencyObject oldParent)
+		{
+			base.OnVisualParentChanged (oldParent);
+			RefreshOwnerStateTracking ();
+		}
 		protected override void OnContentChanged (object oldContent, object newContent)
 		{
 			base.OnContentChanged (oldContent, newContent);
@@ -75,10 +88,35 @@ namespace System.Windows.Controls
 		/// <summary>按当前交互状态挑选背景图。子类可改写（如 ToggleButton 追加 Checked 状态）。</summary>
 		protected virtual ImageSource PickSource ()
 		{
-			bool pressed = IsPressed || ContentPressed || HackButtonContentState.OwnerPressed (this);
-			bool hover = IsMouseOver || ContentHover || HackButtonContentState.OwnerHover (this);
-			bool focused = IsKeyboardFocused || ContentFocused || HackButtonContentState.OwnerFocused (this);
-			bool disabled = !IsEnabled || HackButtonContentState.OwnerDisabled (this);
+			UIElement stateSource = TrackOwnerState ? _ownerStateSource : null;
+			if (TrackOwnerState && stateSource == null)
+			{
+				// Loaded 之前 Parent 可能还没就绪，这里再做一次惰性解析
+				stateSource = ResolveOwnerStateSource ();
+				if (stateSource != null)
+				{
+					_ownerStateSource = stateSource;
+					HackButtonStateSource.Attach (this, stateSource, UpdateArt);
+				}
+			}
+			bool pressed;
+			bool hover;
+			bool focused;
+			bool disabled = !IsEnabled;
+			if (stateSource != null)
+			{
+				pressed = HackButtonStateSource.IsPressed (this);
+				hover = HackButtonStateSource.IsHovered (this);
+				focused = HackButtonStateSource.IsFocused (this);
+				disabled = disabled || HackButtonStateSource.IsDisabled (this);
+			}
+			else
+			{
+				pressed = IsPressed || ContentPressed || HackButtonContentState.OwnerPressed (this);
+				hover = IsMouseOver || ContentHover || HackButtonContentState.OwnerHover (this);
+				focused = IsKeyboardFocused || ContentFocused || HackButtonContentState.OwnerFocused (this);
+				disabled = disabled || HackButtonContentState.OwnerDisabled (this);
+			}
 			if (disabled) return DisabledSource ?? NormalSource;
 			if (pressed) return ActiveSource ?? HoverSource ?? NormalSource;
 			if (hover) return HoverSource ?? NormalSource;
@@ -116,6 +154,36 @@ namespace System.Windows.Controls
 		/// 子按钮继续响应交互和 Click，本控件的图跟着变（状态不会被父控件吞掉）。
 		/// </summary>
 		public bool TrackContentState { get { return (bool)GetValue (TrackContentStateProperty); } set { SetValue (TrackContentStateProperty, value); } }
+
+		public static readonly DependencyProperty TrackOwnerStateProperty = DependencyProperty.Register (nameof (TrackOwnerState), typeof (bool), typeof (HackButton), new PropertyMetadata (false, OnTrackOwnerStateChanged));
+		/// <summary>
+		/// 为 true 时本控件不参与命中（IsHitTestVisible 被强制为 false），只按 TemplatedParent
+		/// （没有则按 Parent）的悬停 / 按下 / 键盘焦点 / 禁用状态选图：像模板里的 Trigger 一样
+		/// 只做状态切换，不会拦截外层控件的事件。
+		/// </summary>
+		public bool TrackOwnerState { get { return (bool)GetValue (TrackOwnerStateProperty); } set { SetValue (TrackOwnerStateProperty, value); } }
+		private static void OnTrackOwnerStateChanged (DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var c = (HackButton)d;
+			c.CoerceValue (UIElement.IsHitTestVisibleProperty);
+			c.RefreshOwnerStateTracking ();
+		}
+		private static object CoerceIsHitTestVisible (DependencyObject d, object baseValue)
+		{
+			return ((HackButton)d).TrackOwnerState ? false : baseValue;
+		}
+		private void RefreshOwnerStateTracking ()
+		{
+			UIElement source = ResolveOwnerStateSource ();
+			if (ReferenceEquals (source, _ownerStateSource)) return;
+			_ownerStateSource = source;
+			HackButtonStateSource.Attach (this, source, UpdateArt);
+			UpdateArt ();
+		}
+		private UIElement ResolveOwnerStateSource ()
+		{
+			return TrackOwnerState ? (TemplatedParent as UIElement ?? Parent as UIElement) : null;
+		}
 		public static readonly DependencyProperty TransitionDurationProperty = DependencyProperty.Register (nameof (TransitionDuration), typeof (Duration), typeof (HackButton), new PropertyMetadata (new Duration (TimeSpan.Zero)));
 		/// <summary>交叉淡入使用的缓动函数；为 null 时线性。</summary>
 		public IEasingFunction TransitionEasing { get { return (IEasingFunction)GetValue (TransitionEasingProperty); } set { SetValue (TransitionEasingProperty, value); } }

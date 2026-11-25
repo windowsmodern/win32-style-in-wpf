@@ -326,6 +326,7 @@ them suitable for custom toolbars, notification buttons, splitter buttons and ot
 | `TransitionDuration` | `Duration` | `0` | State cross-fade duration. Zero switches immediately. |
 | `TransitionEasing` | `IEasingFunction` | `null` | Easing for state changes. |
 | `TrackContentState` | `bool` | `false` | Mirror the hover/press/focus state of a `ButtonBase` used as `Content`; the child keeps input and `Click`. |
+| `TrackOwnerState` | `bool` | `false` | Render hover/press/focus/disabled from the templated parent (or the parent) and force `IsHitTestVisible=false`, so the surrounding control keeps every mouse event. |
 
 ### Tracking the content's state
 
@@ -346,6 +347,31 @@ outer layer disables both. The child still owns the input and raises `Click`; th
 it. Priority stays disabled > pressed > hover > focus. The property exists on `HackButton`,
 `HackRepeatButton` and `HackToggleButton`.
 
+
+
+### Driving the layers from the surrounding item
+
+When the element around the button — a `MenuItem`, for example — should receive the input, set
+`TrackOwnerState="True"`; the button forces its own `IsHitTestVisible` to `false` (the coercion
+covers the whole subtree, so the nested layer is out of the hit test as well):
+
+```xml
+<ControlTemplate TargetType="{x:Type MenuItem}">
+  <Grid Background="Transparent">
+    <HackButton x:Name="PART_Background" TrackOwnerState="True"
+                Style="{DynamicResource ...Background}">
+      <HackButton x:Name="PART_Foreground" TrackOwnerState="True"
+                  Style="{DynamicResource ...Foreground}" />
+    </HackButton>
+  </Grid>
+</ControlTemplate>
+```
+
+The `MenuItem` receives every mouse event (click, hover, submenu opening) and the two buttons only
+render the images for its state. The state source is `TemplatedParent` (falling back to `Parent`).
+`IsMouseOver`, `IsKeyboardFocusWithin` and `IsEnabled` are read directly; `IsPressed` is used when
+the source is a `ButtonBase`, otherwise the press is tracked from the source's preview mouse-down
+plus the window's mouse-up.
 
 ### State selection
 

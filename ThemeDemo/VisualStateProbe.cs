@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -200,6 +202,80 @@ namespace ThemeDemo
             SetPressed (toggleOuter, true);
             Check (Current (toggleInner) == fgActive, "HackToggleButton content follows it", string.Empty);
             SetPressed (toggleOuter, false);
+
+            // TrackOwnerState: the MenuItem owns the input, the two layers only render the state.
+            var menuItem = new MenuItem { Header = "m", Width = 22, Height = 22 };
+            var innerFactory = new FrameworkElementFactory (typeof (HackButton));
+            innerFactory.Name = "PART_Foreground";
+            innerFactory.SetValue (HackButton.TrackOwnerStateProperty, true);
+            innerFactory.SetValue (HackButton.NormalSourceProperty, (ImageSource)fgNormal);
+            innerFactory.SetValue (HackButton.HoverSourceProperty, (ImageSource)fgHover);
+            innerFactory.SetValue (HackButton.ActiveSourceProperty, (ImageSource)fgActive);
+            var outerFactory = new FrameworkElementFactory (typeof (HackButton));
+            outerFactory.Name = "PART_Background";
+            outerFactory.SetValue (HackButton.TrackOwnerStateProperty, true);
+            outerFactory.SetValue (HackButton.NormalSourceProperty, (ImageSource)normal);
+            outerFactory.SetValue (HackButton.HoverSourceProperty, (ImageSource)hover);
+            outerFactory.SetValue (HackButton.ActiveSourceProperty, (ImageSource)active);
+            outerFactory.AppendChild (innerFactory);
+            var gridFactory = new FrameworkElementFactory (typeof (Grid));
+            gridFactory.SetValue (Panel.BackgroundProperty, Brushes.Transparent);
+            gridFactory.AppendChild (outerFactory);
+            menuItem.Template = new ControlTemplate (typeof (MenuItem)) { VisualTree = gridFactory };
+            var menu = new Menu ();
+            menu.Items.Add (menuItem);
+            panel.Children.Add (menu);
+            window.UpdateLayout ();
+            menuItem.ApplyTemplate ();
+            window.UpdateLayout ();
+
+            var menuBackground = (HackButton)menuItem.Template.FindName ("PART_Background", menuItem);
+            var menuForeground = (HackButton)menuItem.Template.FindName ("PART_Foreground", menuItem);
+            Check (menuBackground != null && menuBackground.TrackOwnerState && !menuBackground.IsHitTestVisible,
+                "background layer tracks the owner and is hit-test invisible",
+                menuBackground == null ? "missing" : "IsHitTestVisible=" + menuBackground.IsHitTestVisible);
+            Check (menuForeground != null && menuForeground.TrackOwnerState && !menuForeground.IsHitTestVisible,
+                "foreground layer tracks the owner and is hit-test invisible",
+                menuForeground == null ? "missing" : "IsHitTestVisible=" + menuForeground.IsHitTestVisible);
+            object menuHit = menuItem.InputHitTest (new Point (11, 11));
+            Check (menuHit is Grid, "the MenuItem receives the hit, not a HackButton",
+                menuHit == null ? "null" : menuHit.GetType ().Name);
+
+            menuItem.RaiseEvent (new MouseButtonEventArgs (Mouse.PrimaryDevice, 0, MouseButton.Left)
+            {
+                RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent
+            });
+            Check (menuBackground != null && Current (menuBackground) == active,
+                "MenuItem mouse-down drives the background layer",
+                menuBackground == null ? "missing" : Name (Current (menuBackground), normal, hover, active, disabled));
+            Check (menuForeground != null && Current (menuForeground) == fgActive,
+                "MenuItem mouse-down drives the foreground layer",
+                menuForeground == null ? "missing" : Name (Current (menuForeground), fgNormal, fgHover, fgActive, fgDisabled));
+
+            window.RaiseEvent (new MouseButtonEventArgs (Mouse.PrimaryDevice, 0, MouseButton.Left)
+            {
+                RoutedEvent = UIElement.PreviewMouseLeftButtonUpEvent
+            });
+            Check (menuBackground != null && Current (menuBackground) == normal,
+                "MenuItem mouse-up restores the background layer",
+                menuBackground == null ? "missing" : Name (Current (menuBackground), normal, hover, active, disabled));
+
+            // Outside a template the parent element becomes the state source.
+            var hostButton = new Button { Width = 22, Height = 22 };
+            var driven = new HackButton ();
+            Configure (driven, normal, hover, active, disabled);
+            driven.TrackOwnerState = true;
+            hostButton.Content = driven;
+            panel.Children.Add (hostButton);
+            window.UpdateLayout ();
+            Check (!driven.IsHitTestVisible, "parent-driven layer is hit-test invisible", "IsHitTestVisible=" + driven.IsHitTestVisible);
+            SetPressed (hostButton, true);
+            Check (Current (driven) == active, "TrackOwnerState follows a plain parent button",
+                Name (Current (driven), normal, hover, active, disabled));
+            SetPressed (hostButton, false);
+            hostButton.IsEnabled = false;
+            Check (Current (driven) == disabled, "TrackOwnerState follows the parent disabled state",
+                Name (Current (driven), normal, hover, active, disabled));
 
             Say (_failures == 0 ? "all content-state checks passed" : _failures + " check(s) failed");
             try
