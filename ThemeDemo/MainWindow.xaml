@@ -465,6 +465,62 @@
                 </StackPanel>
                 </Border>
 
+                <!-- ============ Hack* button images supplied by a Style ============ -->
+                <TextBlock Text="Hack* button images supplied by a Style" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6" />
+                <Border BorderBrush="#FFB8B8B8" BorderThickness="1" Padding="12" Margin="0,0,0,14">
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <BitmapImage x:Key="DemoStyleImageNormal" UriSource="pack://application:,,,/Images/PNGFILE1150_1.png" CacheOption="OnLoad" />
+                            <BitmapImage x:Key="DemoStyleImageHover" UriSource="pack://application:,,,/Images/PNGFILE1151_1.png" CacheOption="OnLoad" />
+                            <BitmapImage x:Key="DemoStyleImageActive" UriSource="pack://application:,,,/Images/PNGFILE1152_1.png" CacheOption="OnLoad" />
+                            <BitmapImage x:Key="DemoStyleImageFocus" UriSource="pack://application:,,,/Images/PNGFILE1154_1.png" CacheOption="OnLoad" />
+                            <BitmapImage x:Key="DemoStyleImageDisabled" UriSource="pack://application:,,,/Images/PNGFILE1153_1.png" CacheOption="OnLoad" />
+                            <Style x:Key="DemoStyleImageHackButton" TargetType="{x:Type HackButton}">
+                                <Setter Property="NormalSource" Value="{DynamicResource DemoStyleImageNormal}" />
+                                <Setter Property="HoverSource" Value="{DynamicResource DemoStyleImageHover}" />
+                                <Setter Property="ActiveSource" Value="{DynamicResource DemoStyleImageActive}" />
+                                <Setter Property="FocusSource" Value="{DynamicResource DemoStyleImageFocus}" />
+                                <Setter Property="DisabledSource" Value="{DynamicResource DemoStyleImageDisabled}" />
+                                <Setter Property="HackThickness" Value="3" />
+                                <Setter Property="TransitionDuration" Value="0:0:0.15" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Padding" Value="14,6" />
+                                <Setter Property="MinWidth" Value="150" />
+                                <Setter Property="Margin" Value="0,0,8,8" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+                            <!-- The reported scenario: the images come from a Style, and the button lives
+                                 inside another control's ControlTemplate. Before 1.0.18 the empty Style the
+                                 constructor assigned outranked this one, so the sources stayed null. -->
+                            <Style x:Key="DemoStyleImageMenuItem" TargetType="{x:Type MenuItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                                            <Grid Background="Transparent">
+                                                <HackButton Style="{DynamicResource DemoStyleImageHackButton}"
+                                                            Content="inside a MenuItem template" />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+                        <TextBlock TextWrapping="Wrap" Foreground="Gray" Margin="0,0,0,10"
+                                   Text="The five *Source properties are dependency properties, so a Style may supply them; this is the shape used by the sticky-note bubble menu — a HackButton inside a MenuItem ControlTemplate, taking its images from a Style through DynamicResource. Hover and press both controls: the art has to change (normal / hover / pressed bitmaps differ). The readouts show what the dependency properties really hold; empty means the Style never reached the element." />
+                        <WrapPanel>
+                            <HackButton x:Name="StyleProvidedHackButton" Style="{DynamicResource DemoStyleImageHackButton}" Content="Style-provided" />
+                            <Menu VerticalAlignment="Center">
+                                <MenuItem Header="menu" Style="{DynamicResource DemoStyleImageMenuItem}" />
+                            </Menu>
+                        </WrapPanel>
+                        <TextBlock Foreground="Gray" TextWrapping="Wrap" Margin="0,6,0,0">
+                            <Run Text="NormalSource=" /><Run Text="{Binding Path=NormalSource, ElementName=StyleProvidedHackButton}" />
+                            <Run Text="   HoverSource=" /><Run Text="{Binding Path=HoverSource, ElementName=StyleProvidedHackButton}" />
+                            <Run Text="   ActiveSource=" /><Run Text="{Binding Path=ActiveSource, ElementName=StyleProvidedHackButton}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
                 <TextBlock Text="ToolTip balloon (public resource keys)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6" />
                 <Border BorderBrush="#FFB8B8B8" BorderThickness="1" Padding="12" Margin="0,0,0,14">
                     <StackPanel>

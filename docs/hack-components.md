@@ -325,6 +325,24 @@ them suitable for custom toolbars, notification buttons, splitter buttons and ot
 | `HackThickness` | `Thickness` | `0` | Nine-patch slices in image pixels. |
 | `TransitionDuration` | `Duration` | `0` | State cross-fade duration. Zero switches immediately. |
 | `TransitionEasing` | `IEasingFunction` | `null` | Easing for state changes. |
+| `TrackContentState` | `bool` | `false` | Mirror the hover/press/focus state of a `ButtonBase` used as `Content`; the child keeps input and `Click`. |
+
+### Tracking the content's state
+
+A `HackButton` often wraps another button — a background layer plus an icon layer. Only the
+hit-tested child can become `IsPressed`, so without help the outer layer keeps its normal image.
+`TrackContentState` makes the outer button pick its images from the child's state as well:
+
+```xml
+<HackButton x:Name="PART_Background" TrackContentState="True" ...>
+  <HackButton x:Name="PART_Foreground" ... />
+</HackButton>
+```
+
+The child stays the input owner and raises `Click`; the parent only reads `IsMouseOver`,
+`IsPressed` and `IsKeyboardFocused` (disabled still wins, then pressed, hover, focus). The property
+exists on `HackButton`, `HackRepeatButton` and `HackToggleButton`.
+
 
 ### State selection
 
@@ -339,8 +357,17 @@ back as follows:
 | keyboard focused | `FocusSource ?? HoverSource ?? NormalSource` |
 | normal | `NormalSource` |
 
-The button blocks the implicit `{x:Type Button}` style by assigning an empty local style in its
-constructor. If your application has an explicit `Style` for `HackButton`, assign it normally.
+The control assigns no `Style` of its own: a local style would outrank an implicit style and the
+one a `ControlTemplate` sets.  `DefaultStyleKey` is overridden instead, so the base
+`Button`/`RepeatButton`/`ToggleButton` theme template never applies.
+
+### Transitions with a missing image
+
+When a state has no image of its own — for example `NormalSource` is `null` and only
+`HoverSource` is set — entering that state assigns the image directly (there is nothing to
+cross-fade from) and leaving it fades the image out to nothing. Interrupting a fade with a new
+state cancels the old transition instead of letting it finish, so a fast in/out cannot leave a
+stale image on screen.
 
 ```xml
 <pt:HackButton NormalSource="{StaticResource ToolbarNormal}" HoverSource="{StaticResource ToolbarHot}" ActiveSource="{StaticResource ToolbarPressed}" DisabledSource="{StaticResource ToolbarDisabled}" HackThickness="5" TransitionDuration="0:0:0.15" Padding="10,4" Content="OK" />

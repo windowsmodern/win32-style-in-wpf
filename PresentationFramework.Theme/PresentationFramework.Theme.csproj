@@ -47,6 +47,7 @@
     <Compile Include="HackBorder.cs" />
     <Compile Include="HackButton.cs" />
     <Compile Include="HackButtonChrome.cs" />
+    <Compile Include="HackButtonContentState.cs" />
     <Compile Include="HackRepeatButton.cs" />
     <Compile Include="HackToggleButton.cs" />
   <Compile Include="HackImage.cs" />

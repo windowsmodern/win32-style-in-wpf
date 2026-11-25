@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -15,6 +16,8 @@ namespace System.Windows.Controls
 	public class HackButton: Button
 	{
 		private readonly HackButtonChrome _chrome;
+		private ButtonBase _contentStateSource;
+		private EventHandler _contentStateHandler;
 		static HackButton () { DefaultStyleKeyProperty.OverrideMetadata (typeof (HackButton), new FrameworkPropertyMetadata (typeof (HackButton))); }
 		public HackButton ()
 		{
@@ -36,14 +39,40 @@ namespace System.Windows.Controls
 		protected override Size ArrangeOverride (Size finalSize) { return _chrome.Arrange (finalSize, Padding); }
 		protected override void OnIsPressedChanged (DependencyPropertyChangedEventArgs e) { base.OnIsPressedChanged (e); UpdateArt (); }
 		internal void UpdateArt () { if (_chrome != null) _chrome.SetSource (PickSource (), TransitionDuration, TransitionEasing); }
+		protected override void OnContentChanged (object oldContent, object newContent)
+		{
+			base.OnContentChanged (oldContent, newContent);
+			RefreshContentStateTracking ();
+		}
+		private static void OnTrackContentStateChanged (DependencyObject d, DependencyPropertyChangedEventArgs e) { ((HackButton)d).RefreshContentStateTracking (); }
+		private void RefreshContentStateTracking ()
+		{
+			ButtonBase source = TrackContentState ? Content as ButtonBase : null;
+			if (ReferenceEquals (source, _contentStateSource)) return;
+			if (_contentStateSource != null && _contentStateHandler != null)
+				HackButtonContentState.Detach (_contentStateSource, _contentStateHandler);
+			_contentStateSource = source;
+			if (source != null)
+			{
+				if (_contentStateHandler == null) _contentStateHandler = delegate { UpdateArt (); };
+				HackButtonContentState.Attach (source, _contentStateHandler);
+			}
+			UpdateArt ();
+		}
+		private bool ContentPressed { get { return _contentStateSource != null && _contentStateSource.IsPressed; } }
+		private bool ContentHover { get { return _contentStateSource != null && _contentStateSource.IsMouseOver; } }
+		private bool ContentFocused { get { return _contentStateSource != null && _contentStateSource.IsKeyboardFocused; } }
 
 		/// <summary>按当前交互状态挑选背景图。子类可改写（如 ToggleButton 追加 Checked 状态）。</summary>
 		protected virtual ImageSource PickSource ()
 		{
+			bool pressed = IsPressed || ContentPressed;
+			bool hover = IsMouseOver || ContentHover;
+			bool focused = IsKeyboardFocused || ContentFocused;
 			if (!IsEnabled) return DisabledSource ?? NormalSource;
-			if (IsPressed) return ActiveSource ?? HoverSource ?? NormalSource;
-			if (IsMouseOver) return HoverSource ?? NormalSource;
-			if (IsKeyboardFocused) return FocusSource ?? HoverSource ?? NormalSource;
+			if (pressed) return ActiveSource ?? HoverSource ?? NormalSource;
+			if (hover) return HoverSource ?? NormalSource;
+			if (focused) return FocusSource ?? HoverSource ?? NormalSource;
 			return NormalSource;
 		}
 
@@ -70,6 +99,13 @@ namespace System.Windows.Controls
 
 		/// <summary>状态切换时背景图的交叉淡入时长；默认 TimeSpan.Zero，即立即切换。</summary>
 		public Duration TransitionDuration { get { return (Duration)GetValue (TransitionDurationProperty); } set { SetValue (TransitionDurationProperty, value); } }
+
+		public static readonly DependencyProperty TrackContentStateProperty = DependencyProperty.Register (nameof (TrackContentState), typeof (bool), typeof (HackButton), new PropertyMetadata (false, OnTrackContentStateChanged));
+		/// <summary>
+		/// 为 true 且 Content 是 <see cref="ButtonBase"/> 时，把子按钮的悬停 / 按下 / 键盘焦点叠加到本控件的选图上：
+		/// 子按钮继续响应交互和 Click，本控件的图跟着变（状态不会被父控件吞掉）。
+		/// </summary>
+		public bool TrackContentState { get { return (bool)GetValue (TrackContentStateProperty); } set { SetValue (TrackContentStateProperty, value); } }
 		public static readonly DependencyProperty TransitionDurationProperty = DependencyProperty.Register (nameof (TransitionDuration), typeof (Duration), typeof (HackButton), new PropertyMetadata (new Duration (TimeSpan.Zero)));
 		/// <summary>交叉淡入使用的缓动函数；为 null 时线性。</summary>
 		public IEasingFunction TransitionEasing { get { return (IEasingFunction)GetValue (TransitionEasingProperty); } set { SetValue (TransitionEasingProperty, value); } }

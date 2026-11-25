@@ -290,6 +290,22 @@ transition.Start();
 | `HackThickness` | `Thickness` | `0` | 九宫格切片，单位图像像素。 |
 | `TransitionDuration` | `Duration` | `0` | 状态交叉淡入时长；0 表示立即切换。 |
 | `TransitionEasing` | `IEasingFunction` | `null` | 状态切换缓动。 |
+| `TrackContentState` | `bool` | `false` | 跟踪作为 `Content` 的子按钮的悬停/按下/焦点状态；输入和 `Click` 仍由子按钮处理。 |
+
+### 跟踪子元素状态
+
+`HackButton` 经常包住另一个按钮（背景层 + 图标层）。只有被命中的子按钮会进入 `IsPressed`，外层
+否则永远停在常态图。`TrackContentState` 让外层也根据子按钮的状态选图：
+
+```xml
+<HackButton x:Name="PART_Background" TrackContentState="True" ...>
+  <HackButton x:Name="PART_Foreground" ... />
+</HackButton>
+```
+
+子按钮仍然是输入所有者和 `Click` 的来源；外层只读取 `IsMouseOver`、`IsPressed`、`IsKeyboardFocused`
+（禁用仍然优先，然后按下、悬停、焦点）。三个按钮控件都提供该属性。
+
 
 ### 状态选择
 
@@ -303,8 +319,14 @@ transition.Start();
 | 键盘焦点 | `FocusSource ?? HoverSource ?? NormalSource` |
 | 常态 | `NormalSource` |
 
-构造函数会给控件设置一个空的本地 `Style`，用来阻断隐式的 `{x:Type Button}` 样式。若应用里
-有显式的 `HackButton` 样式，正常赋值即可。
+控件刻意不给自己赋 `Style`：局部 `Style` 会压过隐式样式，也会压过 `ControlTemplate` 里设置的
+`Style`。改用 `DefaultStyleKey` 覆盖来挡住基类 `Button`/`RepeatButton`/`ToggleButton` 的主题模板。
+
+### 缺少图片时的过渡
+
+某个状态本身没有图时（例如 `NormalSource` 为 `null`、只设了 `HoverSource`），进入该状态会直接
+赋值（没有可淡入的起点），离开时则把这张图淡出到透明。过渡进行中再切换状态会取消旧过渡，而不是
+让它跑完，所以快速划进划出不会在界面上留下残影。
 
 ```xml
 <pt:HackButton NormalSource="{StaticResource ToolbarNormal}" HoverSource="{StaticResource ToolbarHot}" ActiveSource="{StaticResource ToolbarPressed}" DisabledSource="{StaticResource ToolbarDisabled}" HackThickness="5" TransitionDuration="0:0:0.15" Padding="10,4" Content="确定" />

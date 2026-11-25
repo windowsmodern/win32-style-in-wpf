@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -71,6 +71,24 @@ namespace System.Windows.Controls
 		{
 			if (_disposed) return;
 			Stop ();
+			Release ();
+		}
+		/// <summary>停止推进帧，但不把 Source 切到目标图（用于打断/取消）。</summary>
+		internal void Cancel ()
+		{
+			if (!_running) return;
+			_running = false;
+			CompositionTarget.Rendering -= OnRendering;
+		}
+		/// <summary>直接丢弃过渡：不应用目标图，只释放像素缓冲。</summary>
+		internal void Abort ()
+		{
+			if (_disposed) return;
+			Cancel ();
+			Release ();
+		}
+		private void Release ()
+		{
 			_disposed = true;
 			_fromPixels = null; _toPixels = null;
 			if (_mixed != null) { for (int i = 0; i < 9; i++) _mixed [i] = null; }

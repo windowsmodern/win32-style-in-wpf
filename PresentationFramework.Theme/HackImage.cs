@@ -74,6 +74,8 @@ namespace System.Windows.Controls
 				throw new ArgumentOutOfRangeException (nameof (dpi), "dpi must be a positive number of dots per inch.");
 			return GetStretchedImageCore (dpi, dpi);
 		}
+		/// <summary>按当前 Source 重新切片（过渡被打断、切片还停留在中间帧时用）。</summary>
+		internal void RefreshSlices () { UpdateSlices (); }
 		/// <summary>丢弃缓存的拉伸位图（调用方已拿到的位图不受影响）；下次读取 <see cref="StretchedImage"/> 时重新生成。</summary>
 		public void InvalidateStretchedImage () { DropStretchedImage (); }
 		private BitmapSource GetStretchedImageCore (double dpiX, double dpiY)

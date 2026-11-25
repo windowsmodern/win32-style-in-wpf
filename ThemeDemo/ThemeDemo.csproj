@@ -76,6 +76,8 @@
     <Compile Include="SelfTest.cs" />
     <Compile Include="StretchedProbe.cs" />
     <Compile Include="StyleProbe.cs" />
+    <Compile Include="NullTransitionProbe.cs" />
+    <Compile Include="VisualStateProbe.cs" />
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>

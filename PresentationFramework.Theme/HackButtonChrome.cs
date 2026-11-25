@@ -90,7 +90,19 @@ namespace System.Windows.Controls
 			bool animate = duration.HasTimeSpan && duration.TimeSpan > TimeSpan.Zero && _art.Source != null;
 			if (!animate)
 			{
-				if (ReferenceEquals (_art.Source, source)) return;
+				// 过渡可能仍在推进：从"没有图"淡入时 _art.Source 一直是 null，但切片已是中间帧。
+				// 已经朝同一目标走就等它结束；否则先取消，避免它结束时把旧目标写回 Source。
+				if (HackImageTransitions.GetIsRunning (_art))
+				{
+					if (ReferenceEquals (HackImageTransitions.GetTo (_art), source)) return;
+					HackImageTransitions.Cancel (_art);
+				}
+				if (ReferenceEquals (_art.Source, source))
+				{
+					_art.RefreshSlices ();
+					_owner.InvalidateMeasure ();
+					return;
+				}
 				_art.Source = source;
 				_owner.InvalidateMeasure ();
 				return;

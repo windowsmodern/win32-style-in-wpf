@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -16,7 +16,15 @@ namespace System.Windows.Controls
 		public static readonly DependencyProperty IsRunningProperty = IsRunningPropertyKey.DependencyProperty;
 		private static readonly DependencyProperty TransitionProperty = DependencyProperty.RegisterAttached ("Transition", typeof (HackImageTransition), typeof (HackImageTransitions), new PropertyMetadata (null));
 		public static ImageSource GetTo (DependencyObject d) { return (ImageSource)d.GetValue (ToProperty); }
-		public static void SetTo (DependencyObject d, ImageSource value) { d.SetValue (ToProperty, value); }
+		public static void SetTo (DependencyObject d, ImageSource value)
+		{
+			// null 是附加属性的默认值：当 To 已经是 null 时，SetValue 不会触发属性变更回调，
+			// 但元素上可能还留着上一张图（例如 Normal 为 null、刚按 Hover 直接赋值过一次）。
+			// 这种情况下必须手动启动一次"淡出到透明"，否则图会残留在控件上。
+			bool alreadyNull = d.GetValue (ToProperty) == null;
+			d.SetValue (ToProperty, value);
+			if (value == null && alreadyNull) Begin (d, null);
+		}
 		public static Duration GetDuration (DependencyObject d) { return (Duration)d.GetValue (DurationProperty); }
 		public static void SetDuration (DependencyObject d, Duration value) { d.SetValue (DurationProperty, value); }
 		public static IEasingFunction GetEasing (DependencyObject d) { return (IEasingFunction)d.GetValue (EasingProperty); }
@@ -24,10 +32,16 @@ namespace System.Windows.Controls
 		public static bool GetIsRunning (DependencyObject d) { return (bool)d.GetValue (IsRunningProperty); }
 		private static void OnToChanged (DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
+			Begin (d, e.NewValue as ImageSource);
+		}
+		private static void Begin (DependencyObject d, ImageSource newValue)
+		{
 			var img = d as HackImage;
 			if (img == null) return;
 			BitmapSource midFrame = null;
 			var old = d.GetValue (TransitionProperty) as HackImageTransition;
+			// 已经朝同一个目标在走（例如连续两次 SetTo(null) 的淡出），不要重启动画。
+			if (old != null && GetIsRunning (img) && ReferenceEquals (GetTo (img), newValue)) return;
 			if (old != null)
 			{
 				midFrame = old.GetCurrentFrame ();
@@ -35,7 +49,7 @@ namespace System.Windows.Controls
 				d.SetValue (TransitionProperty, null);
 				d.SetValue (IsRunningPropertyKey, false);
 			}
-			var to = e.NewValue as BitmapSource;
+			var to = newValue as BitmapSource;
 			var from = midFrame ?? (img.Source as BitmapSource);
 			if (from == null && to == null) return;
 			if (from != null && ReferenceEquals (from, to)) return;
@@ -48,6 +62,14 @@ namespace System.Windows.Controls
 			d.SetValue (TransitionProperty, trans);
 			img.SetValue (IsRunningPropertyKey, true);
 			trans.Start ();
+		}
+		/// <summary>取消正在推进的过渡，不应用目标图；切片由调用方自行刷新。</summary>
+		internal static void Cancel (HackImage img)
+		{
+			var trans = img.GetValue (TransitionProperty) as HackImageTransition;
+			img.SetValue (TransitionProperty, null);
+			img.SetValue (IsRunningPropertyKey, false);
+			if (trans != null) trans.Abort ();
 		}
 		// 检查一张图在当前 HackThickness / IsSourceShrink 下能否切片；null 视为可切片（透明）
 		private static bool CanSlice (HackImage img, BitmapSource bmp)
